@@ -8,6 +8,11 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
+  
+  <listener>
+      <listener-class>com.example.APIKeyInitializer</listener-class>
+      <load-on-startup>1</load-on-startup>
+  </listener>
     
   <servlet>
     <servlet-name>hello</servlet-name>
@@ -18,6 +23,21 @@
     <servlet-name>hello</servlet-name>
     <url-pattern>/hello</url-pattern>
   </servlet-mapping>
-
+  <servlet>
+      <servlet-name>registerId</servlet-name>
+      <servlet-class>com.example.RegisterServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>registerId</servlet-name>
+      <url-pattern>/register</url-pattern>
+  </servlet-mapping>
+  <servlet>
+      <servlet-name>unregisterId</servlet-name>
+      <servlet-class>com.example.UnregisterServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>unregisterId</servlet-name>
+      <url-pattern>/unregister</url-pattern>
+  </servlet-mapping>
 
 </web-app>
