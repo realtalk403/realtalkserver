@@ -1,5 +1,7 @@
 package com.example;
 
+import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,7 +12,7 @@ public class RegisterServlet extends BaseServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-        throws ServletException {
+        throws ServletException, IOException {
         String regId = getParameter(req, PARAMETER_REG_ID);
         Datastore.register(regId);
         setSuccess(resp);
