@@ -44,7 +44,7 @@ public class RegisterServlet extends BaseServlet {
         resp.setContentType("text/plain");
         System.out.println("Logging for JSON");
         System.out.println(jsonResponse.toString());
-        resp.getWriter().write(jsonResponse.toString());
+        resp.getWriter().println(jsonResponse.toString());
         setSuccess(resp);
     }
 }
