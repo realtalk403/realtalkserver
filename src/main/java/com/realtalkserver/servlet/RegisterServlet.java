@@ -16,7 +16,7 @@ import com.realtalkserver.util.UserManager;
 public class RegisterServlet extends BaseServlet {
     private static final String PARAMETER_REG_ID = "PARAMETER_REG_ID";
     private static final String PARAMETER_USER = "PARAMETER_USER";
-    private static final String PARAMETER_PWORD = "PARAMENTER_PWORD";
+    private static final String PARAMETER_PWORD = "PARAMETER_PWORD";
     private static final String PARAMETER_SUCCESS = "success";
     
     @Override
@@ -27,7 +27,7 @@ public class RegisterServlet extends BaseServlet {
         String stPwd = getParameter(req, PARAMETER_PWORD);
         
         // Add the User and generate response to indicate if successful
-        boolean fAddUserSuccess = UserManager.addUser(stUser, stPwd, stRegId);
+        boolean fAddUserSuccess = UserManager.fAddUser(stUser, stPwd, stRegId);
         
         // Generate JSON response
         JSONObject jsonResponse = new JSONObject();
