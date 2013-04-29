@@ -1,4 +1,4 @@
-package com.example;
+package com.realtalkserver.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,6 +11,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.realtalkserver.util.Datastore;
 
 @SuppressWarnings("serial")
 public class HelloServlet extends BaseServlet {

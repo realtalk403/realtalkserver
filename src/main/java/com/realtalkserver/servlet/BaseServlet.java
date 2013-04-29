@@ -1,4 +1,4 @@
-package com.example;
+package com.realtalkserver.servlet;
 
 import java.io.IOException;
 import java.util.Enumeration;

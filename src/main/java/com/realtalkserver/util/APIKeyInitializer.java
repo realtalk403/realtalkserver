@@ -1,4 +1,4 @@
-package com.example;
+package com.realtalkserver.util;
 
 import java.util.logging.Logger;
 

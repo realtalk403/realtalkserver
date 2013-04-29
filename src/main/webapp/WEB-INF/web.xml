@@ -10,13 +10,13 @@
     </welcome-file-list>
   
   <listener>
-      <listener-class>com.example.APIKeyInitializer</listener-class>
+      <listener-class>com.realtalkserver.util.APIKeyInitializer</listener-class>
       <load-on-startup>1</load-on-startup>
   </listener>
     
   <servlet>
     <servlet-name>hello</servlet-name>
-    <servlet-class>com.example.HelloServlet</servlet-class>
+    <servlet-class>com.realtalkserver.servlet.HelloServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -25,7 +25,7 @@
   </servlet-mapping>
   <servlet>
       <servlet-name>registerId</servlet-name>
-      <servlet-class>com.example.RegisterServlet</servlet-class>
+      <servlet-class>com.realtalkserver.servlet.RegisterServlet</servlet-class>
   </servlet>
   <servlet-mapping>
       <servlet-name>registerId</servlet-name>
@@ -33,7 +33,7 @@
   </servlet-mapping>
   <servlet>
       <servlet-name>unregisterId</servlet-name>
-      <servlet-class>com.example.UnregisterServlet</servlet-class>
+      <servlet-class>com.realtalkserver.servlet.UnregisterServlet</servlet-class>
   </servlet>
   <servlet-mapping>
       <servlet-name>unregisterId</servlet-name>
