@@ -41,7 +41,7 @@ public class RegisterServlet extends BaseServlet {
         	// Exception will never be thrown as key is not null.
         }
         
-        resp.setContentType("application/json");
+        resp.setContentType("text/plain");
         resp.getWriter().write(jsonResponse.toString());
         setSuccess(resp);
     }
