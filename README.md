@@ -1,3 +1,9 @@
+=======
+realtalkserver
+==============
+
+RealTalkServer is the internal back-end server that manages chat logs and the user database related to the RealTalk android Chat Application
+
 # Embedded Jetty template application 
 
 This is a template for a web application that uses embedded Jetty. The sample code consists of a JSP (this page) and a simple servlet.
@@ -11,4 +17,5 @@ First build with:
 Then run it with:
 
     $java -cp target/classes:target/dependency/* com.example.Main
+
 
