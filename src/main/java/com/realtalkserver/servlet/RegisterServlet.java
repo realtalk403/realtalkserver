@@ -1,6 +1,7 @@
 package com.realtalkserver.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -41,10 +42,12 @@ public class RegisterServlet extends BaseServlet {
         	// Exception will never be thrown as key is not null.
         }
         
-        resp.setContentType("text/plain");
+        
         System.out.println("Logging for JSON");
         System.out.println(jsonResponse.toString());
-        resp.getWriter().println(jsonResponse.toString());
-        setSuccess(resp);
+        
+        PrintWriter out = resp.getWriter();
+        out.print(jsonResponse.toString());
+        resp.setStatus(HttpServletResponse.SC_OK);
     }
 }
