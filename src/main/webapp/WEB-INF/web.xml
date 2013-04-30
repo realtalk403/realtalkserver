@@ -39,5 +39,14 @@
       <servlet-name>unregisterId</servlet-name>
       <url-pattern>/unregister</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+      <servlet-name>authenticateUser</servlet-name>
+      <servlet-class>com.realtalkserver.servlet.AuthenticateServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>authenticateUser</servlet-name>
+      <url-pattern>/authenticate</url-pattern>
+  </servlet-mapping>
 
 </web-app>
