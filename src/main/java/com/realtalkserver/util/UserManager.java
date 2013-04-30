@@ -6,6 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * UserManager manages the user database that stores the user information for RealTalk
+ * 
+ * @author Jory Rice
+ *
+ */
+
 public class UserManager {
 
 	// These are essentially SQL query templates. Question marks
@@ -57,8 +64,10 @@ public class UserManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: user was not added.
+		    System.out.print("Connection failed");
 			return false;
 		} catch (SQLException e) {
+		    System.out.print("Query failed");
 			// SQL INSERT query failed: user was not added.
 			return false;
 		}
