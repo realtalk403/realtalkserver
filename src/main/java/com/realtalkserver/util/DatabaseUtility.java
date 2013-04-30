@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,53 +15,45 @@ import java.sql.Statement;
  *
  */
 public class DatabaseUtility {
-	
-	private Connection connection;
-	
+
 	/**
 	 * Establishes a connection to the database.
-	 * @throws URISyntaxException
-	 * @throws SQLException
-	 */
-	public DatabaseUtility() throws URISyntaxException, SQLException {
-		this.connection = connectionGetConnection();
-	}
-	
-	/**
-	 * Returns a connection to the database.
-	 * @return
+	 * @return connection	the database connection
 	 * @throws URISyntaxException 
 	 * @throws SQLException 
 	 */
-	private Connection connectionGetConnection() throws URISyntaxException, SQLException {
-	    URI dbUri = new URI(System.getenv("DATABASE_URL"));
-	    
-	    String username = dbUri.getUserInfo().split(":")[0];
-	    String password = dbUri.getUserInfo().split(":")[1];
-	    String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + "/" + dbUri.getPath();
+	public static Connection connectionGetConnection() throws URISyntaxException, SQLException {
+		URI dbUri = new URI(System.getenv("DATABASE_URL"));
 
-	    return DriverManager.getConnection(dbUrl, username, password);
+		String username = dbUri.getUserInfo().split(":")[0];
+		String password = dbUri.getUserInfo().split(":")[1];
+		String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + "/" + dbUri.getPath();
+
+		// Set up the connection. Make it commit after every statement.
+		Connection connection = DriverManager.getConnection(dbUrl, username, password);
+		connection.setAutoCommit(true);
+		return connection;
 	}
-	
+
 	/**
 	 * Executes the given query and returns the result.
-	 * @param stQuery
-	 * @return result
+	 * @param preparedStatementQuery	The query to run		
+	 * @return The value returned from the query
 	 * @throws SQLException 
 	 * @throws URISyntaxException 
 	 */
-	public ResultSet resultsetProcessQuery(String stQuery) throws SQLException {
-		Statement statement = connection.createStatement();
-		ResultSet result = statement.executeQuery(stQuery);
-		return result;
+	public static ResultSet resultsetProcessQuery(PreparedStatement preparedStatementQuery) 
+			throws SQLException {
+		return preparedStatementQuery.executeQuery();
 	}
-	
+
 	/**
 	 * Closes the connection to the database.
 	 * This should be called when the connection is no longer needed.
+	 * @param connection 	the database connection to close
 	 * @throws SQLException
 	 */
-	public void closeConnection() throws SQLException {
+	public static void closeConnection(Connection connection) throws SQLException {
 		connection.close();
 	}
 }
