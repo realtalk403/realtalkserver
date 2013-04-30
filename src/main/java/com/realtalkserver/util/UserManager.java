@@ -55,8 +55,9 @@ public class UserManager {
 	 * @return         true if user's registration ID was successfully changed 
 	 * 				   in the database. false if otherwise.
 	 */
-	public static boolean fChangeId(String userName, String password, String regId) {
-		throw new UnsupportedOperationException();
+	public static boolean fChangeId(String userName, String password, 
+			String oldRegId, String newRegId) {
+		return false;
 	}
 	
 	/**
