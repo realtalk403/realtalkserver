@@ -34,14 +34,15 @@ public class UserManager {
 	 * Changes the password of a given User. It checks against both the username
 	 * and its Google Cloud Messaging ID before attempting to change the password.
 	 * 
-	 * @param userName User's username
-	 * @param password User's password
-	 * @param regId    User's Google Cloud Messaging Registration ID
-	 * @return         true if user's password was successfully changed in the database. 
-	 *                 false if otherwise.
+	 * @param userName    User's username
+	 * @param oldPassword User's password
+	 * @param regId       User's Google Cloud Messaging Registration ID
+	 * @return            true if user's password was successfully changed in the database. 
+	 *                    false if otherwise.
 	 */
-	public static boolean fChangePassword(String userName, String password, String regId) {
-		throw new UnsupportedOperationException();
+	public static boolean fChangePassword(String userName, String oldPassword,
+			String newPassword, String regId) {
+		return false;
 	}
 	
 	/**
