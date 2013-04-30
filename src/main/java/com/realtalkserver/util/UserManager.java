@@ -54,7 +54,7 @@ public class UserManager {
 			// Execute the INSERT query
 			ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
 			DatabaseUtility.closeConnection(connection);
-
+			System.out.println(resultSet.toString());
 			// Check for correct result
 			if (resultSet.first() && resultSet.getInt("count") == 1) {
 				return true;
