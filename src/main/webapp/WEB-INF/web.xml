@@ -47,4 +47,12 @@
       <servlet-name>changePwd</servlet-name>
       <url-pattern>/changePwd</url-pattern>
   </servlet-mapping>
+  <servlet>
+      <servlet-name>changeRegId</servlet-name>
+      <servlet-class>com.realtalkserver.servlet.RegistrationIdServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>changeRegId</servlet-name>
+      <url-pattern>/changeRegId</url-pattern>
+  </servlet-mapping>
 </web-app>
