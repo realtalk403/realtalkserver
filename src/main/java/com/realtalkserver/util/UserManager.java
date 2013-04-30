@@ -54,20 +54,22 @@ public class UserManager {
 			// Execute the INSERT query
 			ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
 			DatabaseUtility.closeConnection(connection);
-			System.out.println(resultSet.toString());
+			System.err.println(resultSet.toString());
 			// Check for correct result
 			if (resultSet.first() && resultSet.getInt("count") == 1) {
+			    System.err.println("Add success");
 				return true;
 			} else {
 				// User was not added
+			    System.err.println("Add failure");
 				return false;
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: user was not added.
-		    System.out.print("Connection failed");
+		    System.err.print("Connection failed");
 			return false;
 		} catch (SQLException e) {
-		    System.out.print("Query failed");
+		    System.err.print("Query failed");
 			// SQL INSERT query failed: user was not added.
 			return false;
 		}
