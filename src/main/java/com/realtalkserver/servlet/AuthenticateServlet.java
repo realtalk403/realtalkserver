@@ -12,7 +12,7 @@ import org.json.JSONException;
 import com.realtalkserver.util.RequestParameters;
 import com.realtalkserver.util.UserManager;
 /**
- * RegisterServlet is a servlet used for authenticating a user from the database.
+ * RegisterServlet is a servlet used for authenticating a user.
  * 
  * @author Taylor Williams
  *
@@ -32,7 +32,7 @@ public class AuthenticateServlet extends BaseServlet {
         String stUser = getParameter(req, RequestParameters.PARAMETER_USER);
         String stPwd = getParameter(req, RequestParameters.PARAMETER_PWORD);
         
-        // Authenticate the User and generate response to indicate if successful
+        // Authenticate and generate response to indicate if successful
         boolean fAuthenticated = UserManager.fAuthenticateUser(stUser, stPwd, stRegId);
         
         // Generate JSON response
@@ -40,6 +40,9 @@ public class AuthenticateServlet extends BaseServlet {
         try {
         	String stSuccessMsg = fAuthenticated ? "true" : "false";
         	jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, stSuccessMsg);	
+        	jsonResponse.put(RequestParameters.PARAMETER_USER, stUser);
+        	jsonResponse.put(RequestParameters.PARAMETER_REG_ID, stRegId);
+        	jsonResponse.put(RequestParameters.PARAMETER_PWORD, stPwd);
         } catch (JSONException e) {
         	// Exception will never be thrown as key is not null.
         }
