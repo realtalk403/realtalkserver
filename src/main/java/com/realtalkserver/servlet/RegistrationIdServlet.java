@@ -29,13 +29,12 @@ public class RegistrationIdServlet extends BaseServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// Retrieve the parameter information.
-        String stRegId = getParameter(req, RequestParameters.PARAMETER_REG_ID);
         String stUser = getParameter(req, RequestParameters.PARAMETER_USER);
         String stPwd = getParameter(req, RequestParameters.PARAMETER_PWORD);
         
         String stNewRegId = getParameter(req, RequestParameters.PARAMETER_NEW_REG_ID);
         
-        boolean fChangeIdSuccess = UserManager.fChangeId(stUser, stPwd, stRegId, stNewRegId);
+        boolean fChangeIdSuccess = UserManager.fChangeId(stUser, stPwd, stNewRegId);
         
         // Generate JSON Response
         JSONObject jsonResponse = new JSONObject();
@@ -43,7 +42,6 @@ public class RegistrationIdServlet extends BaseServlet {
         	String stSuccessMsg = fChangeIdSuccess ? "true" : "false";
         	jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, stSuccessMsg);	
         	jsonResponse.put(RequestParameters.PARAMETER_USER, stUser);
-        	jsonResponse.put(RequestParameters.PARAMETER_REG_ID, stRegId);
         	jsonResponse.put(RequestParameters.PARAMETER_PWORD, stPwd);
         	jsonResponse.put(RequestParameters.PARAMETER_NEW_REG_ID, stNewRegId);
         } catch (JSONException e) {
