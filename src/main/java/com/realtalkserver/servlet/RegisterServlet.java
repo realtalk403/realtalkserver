@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import com.realtalkserver.util.RequestParameters;
 import com.realtalkserver.util.UserManager;
 /**
  * RegisterServlet is a servlet used for registering a user to the database.
@@ -19,11 +20,6 @@ import com.realtalkserver.util.UserManager;
 
 @SuppressWarnings("serial")
 public class RegisterServlet extends BaseServlet {
-    private static final String PARAMETER_REG_ID = "PARAMETER_REG_ID";
-    private static final String PARAMETER_USER = "PARAMETER_USER";
-    private static final String PARAMETER_PWORD = "PARAMETER_PWORD";
-    private static final String PARAMETER_SUCCESS = "success";
-    
     /**
      * doPost handles a post request from to the server. This adds a user
      * to the server and returns an appropriate response in JSON.
@@ -32,9 +28,9 @@ public class RegisterServlet extends BaseServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
-        String stRegId = getParameter(req, PARAMETER_REG_ID);
-        String stUser = getParameter(req, PARAMETER_USER);
-        String stPwd = getParameter(req, PARAMETER_PWORD);
+        String stRegId = getParameter(req, RequestParameters.PARAMETER_REG_ID);
+        String stUser = getParameter(req, RequestParameters.PARAMETER_USER);
+        String stPwd = getParameter(req, RequestParameters.PARAMETER_PWORD);
         
         // Add the User and generate response to indicate if successful
         boolean fAddUserSuccess = UserManager.fAddUser(stUser, stPwd, stRegId);
@@ -43,10 +39,10 @@ public class RegisterServlet extends BaseServlet {
         JSONObject jsonResponse = new JSONObject();
         try {
         	String stSuccessMsg = fAddUserSuccess ? "true" : "false";
-        	jsonResponse.put(PARAMETER_SUCCESS, stSuccessMsg);	
-        	jsonResponse.put(PARAMETER_USER, stUser);
-        	jsonResponse.put(PARAMETER_REG_ID, stRegId);
-        	jsonResponse.put(PARAMETER_PWORD, stPwd);
+        	jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, stSuccessMsg);	
+        	jsonResponse.put(RequestParameters.PARAMETER_USER, stUser);
+        	jsonResponse.put(RequestParameters.PARAMETER_REG_ID, stRegId);
+        	jsonResponse.put(RequestParameters.PARAMETER_PWORD, stPwd);
         } catch (JSONException e) {
         	// Exception will never be thrown as key is not null.
         }

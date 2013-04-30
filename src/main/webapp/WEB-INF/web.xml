@@ -15,13 +15,13 @@
   </listener>
     
   <servlet>
-    <servlet-name>hello</servlet-name>
-    <servlet-class>com.realtalkserver.servlet.HelloServlet</servlet-class>
+      <servlet-name>hello</servlet-name>
+      <servlet-class>com.realtalkserver.servlet.HelloServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>hello</servlet-name>
-    <url-pattern>/hello</url-pattern>
+      <servlet-name>hello</servlet-name>
+      <url-pattern>/hello</url-pattern>
   </servlet-mapping>
   <servlet>
       <servlet-name>registerId</servlet-name>
@@ -39,5 +39,12 @@
       <servlet-name>unregisterId</servlet-name>
       <url-pattern>/unregister</url-pattern>
   </servlet-mapping>
-
+  <servlet>
+      <servlet-name>changePwd</servlet-name>
+      <servlet-class>com.realtalkserver.servlet.PasswordServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>changePwd</servlet-name>
+      <url-pattern>/changePwd</url-pattern>
+  </servlet-mapping>
 </web-app>
