@@ -2,8 +2,6 @@ package com.realtalkserver.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Logger;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +10,12 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 import com.realtalkserver.util.UserManager;
+/**
+ * RegisterServlet is a servlet used for registering a user to the database.
+ * 
+ * @author Colin Kho
+ *
+ */
 
 @SuppressWarnings("serial")
 public class RegisterServlet extends BaseServlet {
@@ -20,6 +24,11 @@ public class RegisterServlet extends BaseServlet {
     private static final String PARAMETER_PWORD = "PARAMETER_PWORD";
     private static final String PARAMETER_SUCCESS = "success";
     
+    /**
+     * doPost handles a post request from to the server. This adds a user
+     * to the server and returns an appropriate response in JSON.
+     * 
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
@@ -43,8 +52,6 @@ public class RegisterServlet extends BaseServlet {
         }
         
         resp.setContentType("application/json");
-        System.out.println("Logging for JSON");
-        System.out.println(jsonResponse.toString());
         
         PrintWriter out = resp.getWriter();
         out.print(jsonResponse.toString());

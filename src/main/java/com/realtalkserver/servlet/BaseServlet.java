@@ -9,19 +9,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
+/**
+ * BaseServlet is an abstract class that provides helper utility methods for other
+ * servlets to use. It extends the HttpServlet class. For debugging purposes,
+ * use fDEBUG to allow GET calls.
+ * 
+ * @author Colin Kho
+ *
+ */
 @SuppressWarnings("serial")
 public abstract class BaseServlet extends HttpServlet {
-    // change to true to allow GET calls
-    static final boolean DEBUG = true;
-
+    // boolean that allows GET calls for debugging purposes.
+	// Should be set to false during production.
+    static final boolean fDEBUG = true;
+    
+    // Sets up a Logger that the servlet can do to log its activity
     protected final Logger logger = Logger.getLogger(getClass().getName());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws IOException, ServletException {
-      if (DEBUG) {
+      if (fDEBUG) {
         doPost(req, resp);
       } else {
         super.doGet(req, resp);
@@ -32,7 +40,7 @@ public abstract class BaseServlet extends HttpServlet {
         throws ServletException {
         String value = req.getParameter(parameter);
         if (isEmptyOrNull(value)) {
-          if (DEBUG) {
+          if (fDEBUG) {
             StringBuilder parameters = new StringBuilder();
             @SuppressWarnings({ "unchecked", "rawtypes" })
             Enumeration names = req.getParameterNames();
@@ -56,17 +64,22 @@ public abstract class BaseServlet extends HttpServlet {
         }
         return value.trim();
     }
-
+    
+    /**
+     * Sets a HttpServletResponse to reflect success. 
+     * 
+     * @param resp HttpServletResponse to be set
+     */
     protected void setSuccess(HttpServletResponse resp) {
-        setSuccess(resp, 0);
+    	resp.setStatus(HttpServletResponse.SC_OK);
     }
-
-    protected void setSuccess(HttpServletResponse resp, int size) {
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.setContentType("text/plain");
-        resp.setContentLength(size);
-    }
-
+    
+    /**
+     * Checks to see if the given String is null or empty.
+     * 
+     * @param value String to be examined
+     * @return true if it is empty or null, false if otherwise.
+     */
     protected boolean isEmptyOrNull(String value) {
         return value == null || value.trim().length() == 0;
     }
