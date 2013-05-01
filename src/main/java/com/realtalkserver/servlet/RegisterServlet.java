@@ -34,7 +34,7 @@ public class RegisterServlet extends BaseServlet {
         
         // Add the User and generate response to indicate if successful
         boolean fAddUserSuccess = UserManager.fAddUser(stUser, stPwd, stRegId);
-        
+
         // Generate JSON response
         JSONObject jsonResponse = new JSONObject();
         try {

@@ -6,6 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * UserManager manages the user database that stores the user information for RealTalk
+ * 
+ * @author Jory Rice
+ *
+ */
+
 public class UserManager {
 
 	// These are essentially SQL query templates. Question marks
