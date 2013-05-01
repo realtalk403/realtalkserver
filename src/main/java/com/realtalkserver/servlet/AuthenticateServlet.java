@@ -12,7 +12,7 @@ import org.json.JSONException;
 import com.realtalkserver.util.RequestParameters;
 import com.realtalkserver.util.UserManager;
 /**
- * RegisterServlet is a servlet used for authenticating a user.
+ * AuthenticateServlet is a servlet used for authenticating a user.
  * 
  * @author Taylor Williams
  *
