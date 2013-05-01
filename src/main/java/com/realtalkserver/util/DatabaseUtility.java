@@ -41,11 +41,7 @@ public class DatabaseUtility {
 		System.err.println("password: " + password);
 
 		// Set up the connection. Make it commit after every statement.
-		try {
-			Class.forName("org.postgresql.Driver");
-		} catch (ClassNotFoundException e) {
-			// Driver class not found. Try to connect anyway
-		}
+		Class.forName("org.postgresql.Driver");
 		Connection connection = DriverManager.getConnection(dbUrl, username, password);
 		connection.setAutoCommit(true);
 		return connection;
