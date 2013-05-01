@@ -23,4 +23,7 @@ public class RequestParameters {
     public static final String PARAMETER_NEW_REG_ID = "PARAMETER_NEW_REG_ID";
     // Parameter that indicates success - return "true" or "false" for this.
     public static final String PARAMETER_SUCCESS = "success";
+    
+    public static final String PARAMETER_ROOM_NAME = "PARAMETER_REG_ID";
+    public static final String PARAMETER_ROOM_ID = "PARAMETER_REG_ID";
 }
