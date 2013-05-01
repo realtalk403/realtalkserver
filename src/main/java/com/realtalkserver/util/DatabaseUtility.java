@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Logger;
 
 /**
  * Handles connecting to the database and executing queries.
@@ -15,6 +16,8 @@ import java.sql.Statement;
  *
  */
 public class DatabaseUtility {
+
+    protected final Logger logger = Logger.getLogger(getClass().getName());
 
 	/**
 	 * Establishes a connection to the database.
@@ -24,10 +27,12 @@ public class DatabaseUtility {
 	 */
 	public static Connection connectionGetConnection() throws URISyntaxException, SQLException {
 		URI dbUri = new URI(System.getenv("DATABASE_URL"));
+		System.err.println("db url returned successfully");
 
 		String username = dbUri.getUserInfo().split(":")[0];
 		String password = dbUri.getUserInfo().split(":")[1];
 		String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + "/" + dbUri.getPath();
+		System.err.println("db args parsed successfully");
 
 		// Set up the connection. Make it commit after every statement.
 		Connection connection = DriverManager.getConnection(dbUrl, username, password);
