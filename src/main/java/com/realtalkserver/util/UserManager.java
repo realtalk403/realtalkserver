@@ -6,6 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * UserManager manages the user database that stores the user information for RealTalk
+ * 
+ * @author Jory Rice
+ *
+ */
+
 public class UserManager {
 
 	// These are essentially SQL query templates. Question marks
@@ -50,20 +57,31 @@ public class UserManager {
 			ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
 			System.err.println("query returned successfully");
 			DatabaseUtility.closeConnection(connection);
+<<<<<<< HEAD
 			System.err.println("connection closed successfully");
 
+=======
+			System.err.println(resultSet.toString());
+>>>>>>> heroku/master
 			// Check for correct result
 			if (resultSet.first() && resultSet.getInt("count") == 1) {
+			    System.err.println("Add success");
 				return true;
 			} else {
 				// User was not added
+			    System.err.println("Add failure");
 				return false;
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: user was not added.
+<<<<<<< HEAD
 			e.printStackTrace();
+=======
+		    System.err.print("Connection failed");
+>>>>>>> heroku/master
 			return false;
 		} catch (SQLException e) {
+		    System.err.print("Query failed");
 			// SQL INSERT query failed: user was not added.
 			e.printStackTrace();
 			return false;
