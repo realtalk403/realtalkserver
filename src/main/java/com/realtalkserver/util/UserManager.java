@@ -18,7 +18,7 @@ public class UserManager {
 	// These are essentially SQL query templates. Question marks
 	// are replaced by parameters in the methods in this class.
 	private static final String QUERY_ADD_USER = 
-			"INSERT INTO users values('?', '?', '?');";
+			"INSERT INTO users values(?, ?, ?);";
 
 	private static final String QUERY_REMOVE_USER = 
 			"DELETE FROM users WHERE user_name = '?';";
