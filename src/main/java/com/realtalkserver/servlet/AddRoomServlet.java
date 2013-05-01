@@ -9,10 +9,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import com.realtalkserver.util.ChatManager;
+import com.realtalkserver.util.ChatRoomInfo;
 import com.realtalkserver.util.RequestParameters;
+import com.realtalkserver.util.UserInfo;
 import com.realtalkserver.util.UserManager;
 /**
- * AuthenticateServlet is a servlet used for authenticating a user.
+ * AddRoomServlet is a servlet used for adding a chat room.
  * 
  * @author Taylor Williams
  *
@@ -21,7 +24,7 @@ import com.realtalkserver.util.UserManager;
 @SuppressWarnings("serial")
 public class AddRoomServlet extends BaseServlet {
     /**
-     * doPost handles a post request from to the server. This adds a user
+     * doPost handles a post request from to the server. This adds a chat room
      * to the server and returns an appropriate response in JSON.
      * 
      */
@@ -32,17 +35,23 @@ public class AddRoomServlet extends BaseServlet {
         String stUser = getParameter(req, RequestParameters.PARAMETER_USER);
         String stPwd = getParameter(req, RequestParameters.PARAMETER_PWORD);
         
-        // Authenticate and generate response to indicate if successful
-        boolean fAuthenticated = UserManager.fAuthenticateUser(stUser, stPwd, stRegId);
+        String stRoomId = getParameter(req, RequestParameters.PARAMETER_ROOM_ID);
+        String stRoomName = getParameter(req, RequestParameters.PARAMETER_ROOM_NAME);
+        
+        UserInfo userinfo = new UserInfo(stUser, stPwd, stRegId);
+        ChatRoomInfo chatroominfo = new ChatRoomInfo(stRoomName, stRoomId, "", "", 1, "", "");
+        // Add room and generate response to indicate if successful
+        int iChatroom = ChatManager.iAddRoom(userinfo, chatroominfo);
         
         // Generate JSON response
         JSONObject jsonResponse = new JSONObject();
         try {
-        	String stSuccessMsg = fAuthenticated ? "true" : "false";
+        	String stSuccessMsg = iChatroom >= 0 ? "true" : "false";
         	jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, stSuccessMsg);	
         	jsonResponse.put(RequestParameters.PARAMETER_USER, stUser);
         	jsonResponse.put(RequestParameters.PARAMETER_REG_ID, stRegId);
         	jsonResponse.put(RequestParameters.PARAMETER_PWORD, stPwd);
+        	jsonResponse.put(RequestParameters.PARAMETER_ROOM_ID, iChatroom);
         } catch (JSONException e) {
         	// Exception will never be thrown as key is not null.
         }
