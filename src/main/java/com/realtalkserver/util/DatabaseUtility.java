@@ -33,6 +33,9 @@ public class DatabaseUtility {
 		String password = dbUri.getUserInfo().split(":")[1];
 		String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + "/" + dbUri.getPath();
 		System.err.println("db args parsed successfully");
+		System.err.println("url: " + dbUrl);
+		System.err.println("username: " + username);
+		System.err.println("password: " + password);
 
 		// Set up the connection. Make it commit after every statement.
 		Connection connection = DriverManager.getConnection(dbUrl, username, password);
