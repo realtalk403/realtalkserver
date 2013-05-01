@@ -85,6 +85,11 @@ public class UserManager {
 			// SQL INSERT query failed: user was not added.
 			e.printStackTrace();
 			return false;
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
+			System.err.println("Driver error");
+			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -121,6 +126,11 @@ public class UserManager {
 			return false;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: user was not added.
+			return false;
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
+			System.err.println("Driver error");
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -167,6 +177,11 @@ public class UserManager {
 		} catch (SQLException e) {
 			// SQL INSERT query failed: user was not added.
 			return false;
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
+			System.err.println("Driver error");
+			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -204,6 +219,11 @@ public class UserManager {
 			return false;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: user was not added.
+			return false;
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
+			System.err.println("Driver error");
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -244,6 +264,11 @@ public class UserManager {
 			return false;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: user was not added.
+			return false;
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
+			System.err.println("Driver error");
+			e.printStackTrace();
 			return false;
 		}
 	}

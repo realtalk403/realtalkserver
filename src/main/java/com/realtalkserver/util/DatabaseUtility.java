@@ -22,22 +22,26 @@ public class DatabaseUtility {
 	/**
 	 * Establishes a connection to the database.
 	 * @return connection	the database connection
-	 * @throws URISyntaxException 
-	 * @throws SQLException 
+	 * @throws URISyntaxException  		if the database url is incorrect 
+	 * @throws SQLException 			if a connection error occurs
+	 * @throws ClassNotFoundException 	if the driver can not be loaded
 	 */
-	public static Connection connectionGetConnection() throws URISyntaxException, SQLException {
+	public static Connection connectionGetConnection() throws URISyntaxException, SQLException, ClassNotFoundException {
 		URI dbUri = new URI(System.getenv("DATABASE_URL"));
 		System.err.println("db url returned successfully");
 
 		String username = dbUri.getUserInfo().split(":")[0];
 		String password = dbUri.getUserInfo().split(":")[1];
+		//String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath();
 		String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + "/" + dbUri.getPath();
+		
 		System.err.println("db args parsed successfully");
 		System.err.println("url: " + dbUrl);
 		System.err.println("username: " + username);
 		System.err.println("password: " + password);
 
 		// Set up the connection. Make it commit after every statement.
+		Class.forName("org.postgresql.Driver");
 		Connection connection = DriverManager.getConnection(dbUrl, username, password);
 		connection.setAutoCommit(true);
 		return connection;
