@@ -33,7 +33,7 @@ public class DatabaseUtility {
 		String username = dbUri.getUserInfo().split(":")[0];
 		String password = dbUri.getUserInfo().split(":")[1];
 		//String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath();
-		String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + "/" + dbUri.getPath();
+		String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
 		
 		System.err.println("db args parsed successfully");
 		System.err.println("url: " + dbUrl);
