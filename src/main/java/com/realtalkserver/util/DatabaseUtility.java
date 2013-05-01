@@ -7,7 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.logging.Logger;
 
 /**
@@ -41,7 +41,7 @@ public class DatabaseUtility {
 		System.err.println("password: " + password);
 
 		// Set up the connection. Make it commit after every statement.
-		//Class.forName("org.postgresql.Driver");
+		Class.forName("org.postgresql.Driver");
 		Connection connection = DriverManager.getConnection(dbUrl, username, password);
 		connection.setAutoCommit(true);
 		return connection;
