@@ -54,18 +54,22 @@ public class UserManager {
 
 			System.err.println("statement prepared successfully");
 			// Execute the INSERT query
-			ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
+			int result = preparedStatement.executeUpdate();
+			//ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
 			System.err.println("query returned successfully");
 			DatabaseUtility.closeConnection(connection);
 
 			System.err.println("connection closed successfully");
 
 
-			System.err.println(resultSet.toString());
+			//System.err.println(resultSet.toString());
 
 			// Check for correct result
-			if (resultSet.first() && resultSet.getInt("count") == 1) {
-			    System.err.println("Add success");
+//			if (resultSet.first() && resultSet.getInt("count") == 1) {
+//			    System.err.println("Add success");
+//				return true;
+			if (result == 1) {
+				// User was added
 				return true;
 			} else {
 				// User was not added
