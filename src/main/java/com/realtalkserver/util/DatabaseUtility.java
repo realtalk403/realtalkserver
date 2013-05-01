@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.*;
 import java.util.logging.Logger;
-import org.postgresql.*;
 
 /**
  * Handles connecting to the database and executing queries.
