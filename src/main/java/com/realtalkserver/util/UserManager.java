@@ -57,12 +57,12 @@ public class UserManager {
 			ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
 			System.err.println("query returned successfully");
 			DatabaseUtility.closeConnection(connection);
-<<<<<<< HEAD
+
 			System.err.println("connection closed successfully");
 
-=======
+
 			System.err.println(resultSet.toString());
->>>>>>> heroku/master
+
 			// Check for correct result
 			if (resultSet.first() && resultSet.getInt("count") == 1) {
 			    System.err.println("Add success");
@@ -74,11 +74,11 @@ public class UserManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: user was not added.
-<<<<<<< HEAD
+
 			e.printStackTrace();
-=======
+
 		    System.err.print("Connection failed");
->>>>>>> heroku/master
+
 			return false;
 		} catch (SQLException e) {
 		    System.err.print("Query failed");
