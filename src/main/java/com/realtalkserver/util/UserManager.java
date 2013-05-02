@@ -30,7 +30,7 @@ public class UserManager {
 			"UPDATE users SET device_id = ? WHERE user_name = ?;";
 
 	private static final String QUERY_AUTHENTICATE = 
-			"SELECT * FROM users WHERE user_name = ? AND password = ? AND device_id = ?;";
+			"SELECT * FROM users WHERE user_name = ? AND password = ?;";
 
 	/**
 	 * Adds a User to the User Database and returns true if user was successfully
@@ -99,20 +99,25 @@ public class UserManager {
 	 */
 	public static boolean fRemoveUser(String userName, String password, String regId) {
 		try {
-			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(QUERY_REMOVE_USER);
-			preparedStatement.setString(1, userName);
-
-			// Execute the DELETE query
-			int result = preparedStatement.executeUpdate();
-			DatabaseUtility.closeConnection(connection);
-
-			// Check for correct result
-			if (result == 1) {
-				return true;
+			if (fAuthenticateUser(userName, password)) {
+				// Connect to the database and prepare the query
+				Connection connection = DatabaseUtility.connectionGetConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(QUERY_REMOVE_USER);
+				preparedStatement.setString(1, userName);
+	
+				// Execute the DELETE query
+				int result = preparedStatement.executeUpdate();
+				DatabaseUtility.closeConnection(connection);
+	
+				// Check for correct result
+				if (result == 1) {
+					return true;
+				} else {
+					// User was not removed
+					return false;
+				}
 			} else {
-				// User was not removed
+				// Authentication failed: user not removed
 				return false;
 			}
 		} catch (URISyntaxException e) {
@@ -142,8 +147,7 @@ public class UserManager {
 	 */
 	public static boolean fChangePassword(String userName, String oldPassword, String newPassword, String regId) {
 		try {
-			boolean fAuthentication = fAuthenticateUser(userName, oldPassword, regId);
-			if (fAuthentication) {
+			if (fAuthenticateUser(userName, oldPassword)) {
 				// Connect to the database and prepare the query
 				Connection connection = DatabaseUtility.connectionGetConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(QUERY_CHANGE_PASSWORD);
@@ -191,21 +195,26 @@ public class UserManager {
 	 */
 	public static boolean fChangeId(String userName, String password, String newRegId) {
 		try {
-			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(QUERY_CHANGE_ID);
-			preparedStatement.setString(1, newRegId);
-			preparedStatement.setString(2, userName);
-
-			// Execute the UPDATE query
-			int result = preparedStatement.executeUpdate();
-			DatabaseUtility.closeConnection(connection);
-
-			// Check for correct result
-			if (result == 1) {
-				return true;
+			if (fAuthenticateUser(userName, password)) {
+				// Connect to the database and prepare the query
+				Connection connection = DatabaseUtility.connectionGetConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(QUERY_CHANGE_ID);
+				preparedStatement.setString(1, newRegId);
+				preparedStatement.setString(2, userName);
+	
+				// Execute the UPDATE query
+				int result = preparedStatement.executeUpdate();
+				DatabaseUtility.closeConnection(connection);
+	
+				// Check for correct result
+				if (result == 1) {
+					return true;
+				} else {
+					// ID was not changed
+					return false;
+				}
 			} else {
-				// ID was not changed
+				// Authentication failed: ID does not change.
 				return false;
 			}
 		} catch (URISyntaxException e) {
@@ -233,14 +242,13 @@ public class UserManager {
 	 * @return         true if user's exists and user's credentials are correct.
 	 *                 false if otherwise.
 	 */
-	public static boolean fAuthenticateUser(String userName, String password, String regId) {
+	public static boolean fAuthenticateUser(String userName, String password) {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(QUERY_AUTHENTICATE);
 			preparedStatement.setString(1, userName);
 			preparedStatement.setString(2, password);
-			preparedStatement.setString(3, regId);
 
 			// Execute the SELECT query
 			ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
@@ -251,6 +259,7 @@ public class UserManager {
 				return true;
 			} else {
 				// 0 rows: User does not exist or the credentials are incorrect
+				System.err.println("Authentication failed");
 				return false;
 			}
 		} catch (URISyntaxException e) {
