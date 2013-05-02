@@ -63,6 +63,7 @@
       <servlet-name>changeRegId</servlet-name>
       <url-pattern>/changeRegId</url-pattern>
   </servlet-mapping>
+  <!-- Chat Room Servlets -->
   <servlet>
       <servlet-name>addRoom</servlet-name>
       <servlet-class>com.realtalkserver.servlet.AddRoomServlet</servlet-class>
@@ -70,5 +71,29 @@
   <servlet-mapping>
       <servlet-name>addRoom</servlet-name>
       <url-pattern>/addRoom</url-pattern>
+  </servlet-mapping>
+  <servlet>
+      <servlet-name>joinRoom</servlet-name>
+      <servlet-class>com.realtalkserver.servlet.JoinRoomServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>joinRoom</servlet-name>
+      <url-pattern>/joinRoom</url-pattern>
+  </servlet-mapping>
+  <servlet>
+      <servlet-name>leaveRoom</servlet-name>
+      <servlet-class>com.realtalkserver.servlet.LeaveRoomServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>leaveRoom</servlet-name>
+      <url-pattern>/leaveRoom</url-pattern>
+  </servlet-mapping>
+  <servlet>
+      <servlet-name>postMessage</servlet-name>
+      <servlet-class>com.realtalkserver.servlet.PostMessageServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>postMessage</servlet-name>
+      <url-pattern>/post</url-pattern>
   </servlet-mapping>
 </web-app>
