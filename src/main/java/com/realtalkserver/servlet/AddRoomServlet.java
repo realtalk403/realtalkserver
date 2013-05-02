@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-import com.realtalkserver.util.ChatManager;
+import com.realtalkserver.util.ChatServerManager;
 import com.realtalkserver.util.ChatRoomInfo;
 import com.realtalkserver.util.RequestParameters;
 import com.realtalkserver.util.UserInfo;
@@ -41,7 +41,7 @@ public class AddRoomServlet extends BaseServlet {
         UserInfo userinfo = new UserInfo(stUser, stPwd, stRegId);
         ChatRoomInfo chatroominfo = new ChatRoomInfo(stRoomName, stRoomId, "", "", 1, null);
         // Add room and generate response to indicate if successful
-        int iChatroom = ChatManager.iAddRoom(userinfo, chatroominfo);
+        int iChatroom = ChatServerManager.iAddRoom(userinfo, chatroominfo);
         
         // Generate JSON response
         JSONObject jsonResponse = new JSONObject();
