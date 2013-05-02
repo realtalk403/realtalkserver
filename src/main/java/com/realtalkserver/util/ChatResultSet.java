@@ -37,6 +37,20 @@ public class ChatResultSet {
     public ChatResultSet(ChatCode chatCode, int chatId) {
         this(new ArrayList<MessageInfo>(), chatCode, chatId);
     }
+    
+    /**
+     * @param chatCode
+     */
+    public ChatResultSet(List<MessageInfo> messages, ChatCode chatCode) {
+        this(messages, chatCode, 0);
+    }
+    
+    /**
+     * @param chatCode
+     */
+    public ChatResultSet(ChatCode chatCode) {
+        this(new ArrayList<MessageInfo>(), chatCode, 0);
+    }
 
     /**
      * @return the messages
