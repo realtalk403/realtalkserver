@@ -46,7 +46,7 @@ public class PostMessageServlet extends BaseServlet {
 		String stRoomName = getParameter(req, RequestParameters.PARAMETER_ROOM_NAME);
 		String stRoomId = getParameter(req, RequestParameters.PARAMETER_ROOM_ID);
 		// TODO: Extra Room information may be required.
-		ChatRoomInfo chatRoomInfo = new ChatRoomInfo(stRoomName, stRoomId, "", "", 0, null);
+		ChatRoomInfo chatRoomInfo = new ChatRoomInfo(stRoomName, stRoomId, "", 0, 0, "", 0, null);
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		// Message Info

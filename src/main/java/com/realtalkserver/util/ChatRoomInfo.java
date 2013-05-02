@@ -4,6 +4,7 @@
 package com.realtalkserver.util;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * ChatRoomInfo is an immutable container class used to represent a chat room.
@@ -14,47 +15,62 @@ import java.sql.Timestamp;
 public class ChatRoomInfo {
     private String name;
     private String id;
-    private String location; //TODO : May want to be coordinates
+    private String description;
+    private double latitude;
+    private double longitude;
     private String creator;
     private int numUsers;
-    private Timestamp timeStampCreated;
+    private Timestamp timestampCreated;
     
     /**
      * @param name         Chat Room Name
-     * @param id           Chat Room Id
-     * @param location     Chat Room Location
+     * @param id           Chat Room ID
+     * @param description  Chat Room description
+     * @param latitude     Chat Room latitude
+     * @param longitude    Chat Room longitude
      * @param creator      Chat Room Creator
      * @param numUsers     Number of users in chat room
-     * @param timeStamp    Timestamp of when room was created.
+     * @param timestampCreated    Timestamp of when room was created.
      */
-    public ChatRoomInfo(String name, String id, String location,
-            String creator, int numUsers, Timestamp timeStampCreated) {
+    public ChatRoomInfo(String name, String id, String description, double latitude,
+            double longitude, String creator, int numUsers, Timestamp timestampCreated) {
         this.name = name;
         this.id = id;
-        this.location = location;
+        this.description = description;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.creator = creator;
         this.numUsers = numUsers;
-        this.timeStampCreated = timeStampCreated;
+        if (timestampCreated == null) {
+        	// Stamp it here
+        	Date date = new Date();
+        	timestampCreated = new Timestamp(date.getTime());
+        }
+        this.timestampCreated = timestampCreated;
     }
     
     /**
      * @param name         Chat Room Name
      * @param id           Chat Room Id
-     * @param location     Chat Room Location
+     * @param description  Chat Room description
+     * @param latitude     Chat Room latitude
+     * @param longitude    Chat Room longitude
      * @param creator      Chat Room Creator
      * @param numUsers     Number of users in chat room
-     * @param timeStamp    Timestamp of when room was created in the
+     * @param timestampCreated    Timestamp of when room was created in the
      *                     form of a long where it is the milliseconds 
      *                     since January 1, 1970, 00:00:00 GMT
      */
-    public ChatRoomInfo(String name, String id, String location,
-            String creator, int numUsers, long timeStampCreated) {
+    public ChatRoomInfo(String name, String id, String description, double latitude,
+            double longitude, String creator, int numUsers, long timestampCreated) {
         this.name = name;
         this.id = id;
-        this.location = location;
+        this.description = description;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.creator = creator;
         this.numUsers = numUsers;
-        this.timeStampCreated = new Timestamp(timeStampCreated);
+        this.timestampCreated = new Timestamp(timestampCreated);
     }
 
     /**
@@ -72,10 +88,24 @@ public class ChatRoomInfo {
     }
 
     /**
-     * @return the location
+     * @return the description
      */
-    public String getLocation() {
-        return location;
+    public String getDescription() {
+    	return description;
+    }
+
+    /**
+     * @return the latitude
+     */
+    public double getLatitude() {
+    	return latitude;
+    }
+
+    /**
+     * @return the longitude
+     */
+    public double getLongitude() {
+    	return longitude;
     }
 
     /**
@@ -96,7 +126,7 @@ public class ChatRoomInfo {
 	 * @return the timeStampCreated
 	 */
 	public Timestamp getTimeStampCreated() {
-		return new Timestamp(timeStampCreated.getTime());
+		return new Timestamp(timestampCreated.getTime());
 	}
 
 }

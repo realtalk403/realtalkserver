@@ -27,6 +27,8 @@ public class RequestParameters {
     public static final String PARAMETER_ROOM_NAME = "PARAMETER_ROOM_NAME";
     // Room ID
     public static final String PARAMETER_ROOM_ID = "PARAMETER_ROOM_ID";
+    // Room Description
+    public static final String PARAMETER_ROOM_DESCRIPTION = "PARAMETER_ROOM_DESCRIPTION";
     // Message Body
     public static final String PARAMETER_MESSAGE_BODY = "PARAMETER_MESSAGE_BODY";
     // Message Sender

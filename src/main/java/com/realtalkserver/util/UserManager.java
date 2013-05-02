@@ -15,23 +15,6 @@ import java.sql.SQLException;
 
 public class UserManager {
 
-	// These are essentially SQL query templates. Question marks
-	// are replaced by parameters in the methods in this class.
-	private static final String QUERY_ADD_USER = 
-			"INSERT INTO users values(?, ?, ?);";
-
-	private static final String QUERY_REMOVE_USER = 
-			"DELETE FROM users WHERE user_name = ?;";
-
-	private static final String QUERY_CHANGE_PASSWORD = 
-			"UPDATE users SET password = ? WHERE user_name = ?;";
-
-	private static final String QUERY_CHANGE_ID = 
-			"UPDATE users SET device_id = ? WHERE user_name = ?;";
-
-	private static final String QUERY_AUTHENTICATE = 
-			"SELECT * FROM users WHERE user_name = ? AND password = ?;";
-
 	/**
 	 * Adds a User to the User Database and returns true if user was successfully
 	 * added and false if otherwise.
@@ -46,7 +29,7 @@ public class UserManager {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedstatement = connection.prepareStatement(QUERY_ADD_USER);
+			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_ADD_USER);
 			preparedstatement.setString(1, userName);
 			preparedstatement.setString(2, regId);
 			preparedstatement.setString(3, password);
@@ -93,7 +76,7 @@ public class UserManager {
 			if (fAuthenticateUser(userName, password)) {
 				// Connect to the database and prepare the query
 				Connection connection = DatabaseUtility.connectionGetConnection();
-				PreparedStatement preparedstatement = connection.prepareStatement(QUERY_REMOVE_USER);
+				PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_REMOVE_USER);
 				preparedstatement.setString(1, userName);
 	
 				// Execute the DELETE query
@@ -139,7 +122,7 @@ public class UserManager {
 			if (fAuthenticateUser(userName, oldPassword)) {
 				// Connect to the database and prepare the query
 				Connection connection = DatabaseUtility.connectionGetConnection();
-				PreparedStatement preparedstatement = connection.prepareStatement(QUERY_CHANGE_PASSWORD);
+				PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_CHANGE_PASSWORD);
 				preparedstatement.setString(1, newPassword);
 				preparedstatement.setString(2, userName);
 
@@ -185,7 +168,7 @@ public class UserManager {
 			if (fAuthenticateUser(userName, password)) {
 				// Connect to the database and prepare the query
 				Connection connection = DatabaseUtility.connectionGetConnection();
-				PreparedStatement preparedstatement = connection.prepareStatement(QUERY_CHANGE_ID);
+				PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_CHANGE_ID);
 				preparedstatement.setString(1, newRegId);
 				preparedstatement.setString(2, userName);
 	
@@ -230,21 +213,21 @@ public class UserManager {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedstatement = connection.prepareStatement(QUERY_AUTHENTICATE);
+			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_AUTHENTICATE);
 			preparedstatement.setString(1, userName);
 			preparedstatement.setString(2, password);
 
 			// Execute the SELECT query
-			ResultSet resultSet = preparedstatement.executeQuery();
+			ResultSet resultset = preparedstatement.executeQuery();
 			
 			// Check for correct result
-			if (resultSet.next()) {
-				resultSet.close();
+			if (resultset.next()) {
+				resultset.close();
 				DatabaseUtility.closeConnection(connection);
 				return true;
 			} else {
 				// 0 rows: User does not exist or the credentials are incorrect
-				resultSet.close();
+				resultset.close();
 				DatabaseUtility.closeConnection(connection);
 				return false;
 			}
