@@ -4,6 +4,7 @@
 package com.realtalkserver.util;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * ChatRoomInfo is an immutable container class used to represent a chat room.
@@ -19,7 +20,7 @@ public class ChatRoomInfo {
     private double longitude;
     private String creator;
     private int numUsers;
-    private Timestamp timeStampCreated;
+    private Timestamp timestampCreated;
     
     /**
      * @param name         Chat Room Name
@@ -29,10 +30,10 @@ public class ChatRoomInfo {
      * @param longitude    Chat Room longitude
      * @param creator      Chat Room Creator
      * @param numUsers     Number of users in chat room
-     * @param timeStamp    Timestamp of when room was created.
+     * @param timestampCreated    Timestamp of when room was created.
      */
     public ChatRoomInfo(String name, String id, String description, double latitude,
-            double longitude, String creator, int numUsers, Timestamp timeStampCreated) {
+            double longitude, String creator, int numUsers, Timestamp timestampCreated) {
         this.name = name;
         this.id = id;
         this.description = description;
@@ -40,7 +41,12 @@ public class ChatRoomInfo {
         this.longitude = longitude;
         this.creator = creator;
         this.numUsers = numUsers;
-        this.timeStampCreated = timeStampCreated;
+        if (timestampCreated == null) {
+        	// Stamp it here
+        	Date date = new Date();
+        	timestampCreated = new Timestamp(date.getTime());
+        }
+        this.timestampCreated = timestampCreated;
     }
     
     /**
@@ -51,12 +57,12 @@ public class ChatRoomInfo {
      * @param longitude    Chat Room longitude
      * @param creator      Chat Room Creator
      * @param numUsers     Number of users in chat room
-     * @param timeStamp    Timestamp of when room was created in the
+     * @param timestampCreated    Timestamp of when room was created in the
      *                     form of a long where it is the milliseconds 
      *                     since January 1, 1970, 00:00:00 GMT
      */
     public ChatRoomInfo(String name, String id, String description, double latitude,
-            double longitude, String creator, int numUsers, long timeStampCreated) {
+            double longitude, String creator, int numUsers, long timestampCreated) {
         this.name = name;
         this.id = id;
         this.description = description;
@@ -64,7 +70,7 @@ public class ChatRoomInfo {
         this.longitude = longitude;
         this.creator = creator;
         this.numUsers = numUsers;
-        this.timeStampCreated = new Timestamp(timeStampCreated);
+        this.timestampCreated = new Timestamp(timestampCreated);
     }
 
     /**
@@ -120,7 +126,7 @@ public class ChatRoomInfo {
 	 * @return the timeStampCreated
 	 */
 	public Timestamp getTimeStampCreated() {
-		return new Timestamp(timeStampCreated.getTime());
+		return new Timestamp(timestampCreated.getTime());
 	}
 
 }

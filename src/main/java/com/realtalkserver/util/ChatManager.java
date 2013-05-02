@@ -21,15 +21,15 @@ import java.util.List;
  *
  */
 public class ChatManager {
-	
-    /**
-     * Adds new a room to the chat server given the params and returns the chatId.
-     * 
-     * @param  userInfo     User's Information
-     * @param  chatRoomInfo ChatRooms's Information
-     * @return              0 if room was successfully added. -1 if room already exists and -2 if otherwise.
-     */
-    public static int iAddRoom(UserInfo userInfo, ChatRoomInfo chatRoomInfo) {
+
+	/**
+	 * Adds new a room to the chat server given the params and returns the chatId.
+	 * 
+	 * @param  userInfo     User's Information
+	 * @param  chatRoomInfo ChatRooms's Information
+	 * @return              0 if room was successfully added. -1 if room already exists and -2 if otherwise.
+	 */
+	public static int iAddRoom(UserInfo userInfo, ChatRoomInfo chatRoomInfo) {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
@@ -67,16 +67,16 @@ public class ChatManager {
 			e.printStackTrace();
 			return -2;
 		}
-    }
-    
-    /**
-     * Allows the given user to join a given chat room.
-     * 
-     * @param  userInfo     User's Information
-     * @param  chatRoomInfo ChatRooms's Information
-     * @return              Appropriate Chat Code denoting the result.
-     */
-    public static ChatCode chatcodeJoinRoom(UserInfo userInfo, ChatRoomInfo chatRoomInfo) {
+	}
+
+	/**
+	 * Allows the given user to join a given chat room.
+	 * 
+	 * @param  userInfo     User's Information
+	 * @param  chatRoomInfo ChatRooms's Information
+	 * @return              Appropriate Chat Code denoting the result.
+	 */
+	public static ChatCode chatcodeJoinRoom(UserInfo userInfo, ChatRoomInfo chatRoomInfo) {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
@@ -109,16 +109,16 @@ public class ChatManager {
 			e.printStackTrace();
 			return ChatCode.FAILURE;
 		}
-    }
-    
-    /**
-     * Removes a given user from a given chat room.
-     * 
-     * @param  userInfo     User's Information
-     * @param  chatRoomInfo ChatRooms's Information
-     * @return              Appropriate Chat Code denoting the result.
-     */
-    public static ChatCode chatcodeLeaveRoom(UserInfo userInfo, ChatRoomInfo chatRoomInfo) {
+	}
+
+	/**
+	 * Removes a given user from a given chat room.
+	 * 
+	 * @param  userInfo     User's Information
+	 * @param  chatRoomInfo ChatRooms's Information
+	 * @return              Appropriate Chat Code denoting the result.
+	 */
+	public static ChatCode chatcodeLeaveRoom(UserInfo userInfo, ChatRoomInfo chatRoomInfo) {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
@@ -151,17 +151,17 @@ public class ChatManager {
 			e.printStackTrace();
 			return ChatCode.FAILURE;
 		}
-    }
-    
-    /**
-     * Posts a message to a chat room from a user.
-     * 
-     * @param  userInfo     User's Information
-     * @param  chatRoomInfo ChatRooms's Information
-     * @param  MessageInfo  Message's Information
-     * @return              Appropriate Chat Code denoting the result.
-     */
-    public static ChatCode chatcodePostMessage(UserInfo userInfo, ChatRoomInfo chatRoomInfo, MessageInfo msgInfo) {
+	}
+
+	/**
+	 * Posts a message to a chat room from a user.
+	 * 
+	 * @param  userInfo     User's Information
+	 * @param  chatRoomInfo ChatRooms's Information
+	 * @param  MessageInfo  Message's Information
+	 * @return              Appropriate Chat Code denoting the result.
+	 */
+	public static ChatCode chatcodePostMessage(UserInfo userInfo, ChatRoomInfo chatRoomInfo, MessageInfo msgInfo) {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
@@ -196,19 +196,19 @@ public class ChatManager {
 			e.printStackTrace();
 			return ChatCode.FAILURE;
 		}
-    }
-    
-    /**
-     * Retrieves the most recent chat messages from a given chatroom's chatlog since
-     * the given time and date.
-     * 
-     * 
-     * @param chatRoomInfo ChatRoom's Information
-     * @param timestamp    Messages to retrieve after the indicated timeStamp
-     * @return             ChatResultSet that has the most recent messages if successful(ChatCode), otherwise
-     *                     ChatResultSet's ChatCode reflects the appropriate error.
-     */
-    public static ChatResultSet cResSetGetRecentChat(ChatRoomInfo chatRoomInfo, Timestamp timestamp) {
+	}
+
+	/**
+	 * Retrieves the most recent chat messages from a given chatroom's chatlog since
+	 * the given time and date.
+	 * 
+	 * 
+	 * @param chatRoomInfo ChatRoom's Information
+	 * @param timestamp    Messages to retrieve after the indicated timeStamp
+	 * @return             ChatResultSet that has the most recent messages if successful(ChatCode), otherwise
+	 *                     ChatResultSet's ChatCode reflects the appropriate error.
+	 */
+	public static ChatResultSet cResSetGetRecentChat(ChatRoomInfo chatRoomInfo, Timestamp timestamp) {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
@@ -230,7 +230,7 @@ public class ChatManager {
 					String stContent = resultset.getString("content");
 					messages.add(new MessageInfo(stContent, stUsername, timestampSent));
 				}
-				
+
 				resultset.close();
 				DatabaseUtility.closeConnection(connection);
 				return new ChatResultSet(messages, ChatCode.SUCCESS);
@@ -253,16 +253,16 @@ public class ChatManager {
 			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		}
-    }
-    
-    /**
-     * Retrieves the entire chat log from a given chatroom and returns it in a ChatResultSet.
-     * 
-     * @param chatRoomInfo ChatRoom's Information
-     * @return             ChatResultSet that has the entire chat log if successful(ChatCode), otherwise
-     *                     ChatResultSet's ChatCode reflects the appropriate error.
-     */
-    public static ChatResultSet cResSetGetEntireChat(ChatRoomInfo chatRoomInfo) {
+	}
+
+	/**
+	 * Retrieves the entire chat log from a given chatroom and returns it in a ChatResultSet.
+	 * 
+	 * @param chatRoomInfo ChatRoom's Information
+	 * @return             ChatResultSet that has the entire chat log if successful(ChatCode), otherwise
+	 *                     ChatResultSet's ChatCode reflects the appropriate error.
+	 */
+	public static ChatResultSet cResSetGetEntireChat(ChatRoomInfo chatRoomInfo) {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
@@ -283,7 +283,7 @@ public class ChatManager {
 					String stContent = resultset.getString("content");
 					messages.add(new MessageInfo(stContent, stUsername, timestampSent));
 				}
-				
+
 				resultset.close();
 				DatabaseUtility.closeConnection(connection);
 				return new ChatResultSet(messages, ChatCode.SUCCESS);
@@ -306,5 +306,5 @@ public class ChatManager {
 			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		}
-    }
+	}
 }
