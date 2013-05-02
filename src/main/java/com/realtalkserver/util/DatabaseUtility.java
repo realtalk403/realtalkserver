@@ -28,17 +28,10 @@ public class DatabaseUtility {
 	 */
 	public static Connection connectionGetConnection() throws URISyntaxException, SQLException, ClassNotFoundException {
 		URI dbUri = new URI(System.getenv("DATABASE_URL"));
-		System.err.println("db url returned successfully");
 
 		String username = dbUri.getUserInfo().split(":")[0];
 		String password = dbUri.getUserInfo().split(":")[1];
-		//String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath();
 		String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
-		
-		System.err.println("db args parsed successfully");
-		System.err.println("url: " + dbUrl);
-		System.err.println("username: " + username);
-		System.err.println("password: " + password);
 
 		// Set up the connection. Make it commit after every statement.
 		Class.forName("org.postgresql.Driver");

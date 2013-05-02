@@ -20,7 +20,7 @@ import java.util.List;
  * @author Colin Kho and Jory Rice
  *
  */
-public class ChatManager {
+public class ChatServerManager {
 
 	/**
 	 * Adds new a room to the chat server given the params and returns the chatId.

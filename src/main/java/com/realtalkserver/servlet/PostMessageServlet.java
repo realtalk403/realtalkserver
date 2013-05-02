@@ -15,7 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.realtalkserver.util.ChatCode;
-import com.realtalkserver.util.ChatManager;
+import com.realtalkserver.util.ChatServerManager;
 import com.realtalkserver.util.ChatRoomInfo;
 import com.realtalkserver.util.MessageInfo;
 import com.realtalkserver.util.RequestParameters;
@@ -35,32 +35,32 @@ public class PostMessageServlet extends BaseServlet {
 			throws ServletException, IOException {
 		// User Info
 		logger.log(Level.INFO, "Retrieving User Information");
-		String stUserName = req.getParameter(RequestParameters.PARAMETER_USER);
-		String stRegId = req.getParameter(RequestParameters.PARAMETER_REG_ID);
-		String stPwd = req.getParameter(RequestParameters.PARAMETER_PWORD);
+		String stUserName = getParameter(req, RequestParameters.PARAMETER_USER);
+		String stRegId = getParameter(req, RequestParameters.PARAMETER_REG_ID);
+		String stPwd = getParameter(req, RequestParameters.PARAMETER_PWORD);
 		UserInfo userInfo = new UserInfo(stUserName, stRegId, stPwd);
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		// Room Info
 		logger.log(Level.INFO, "Retrieving Chat Room Information");
-		String stRoomName = req.getParameter(RequestParameters.PARAMETER_ROOM_NAME);
-		String stRoomId = req.getParameter(RequestParameters.PARAMETER_ROOM_ID);
+		String stRoomName = getParameter(req, RequestParameters.PARAMETER_ROOM_NAME);
+		String stRoomId = getParameter(req, RequestParameters.PARAMETER_ROOM_ID);
 		// TODO: Extra Room information may be required.
 		ChatRoomInfo chatRoomInfo = new ChatRoomInfo(stRoomName, stRoomId, "", 0, 0, "", 0, null);
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		// Message Info
 		logger.log(Level.INFO, "Retrieving Message Info");
-		String stTimeStamp = req.getParameter(RequestParameters.PARAMETER_MESSAGE_TIMESTAMP);
-		String stMessageBody = req.getParameter(RequestParameters.PARAMETER_MESSAGE_BODY);
-		String stMessageSender = req.getParameter(RequestParameters.PARAMETER_MESSAGE_SENDER);
+		String stTimeStamp = getParameter(req, RequestParameters.PARAMETER_MESSAGE_TIMESTAMP);
+		String stMessageBody = getParameter(req, RequestParameters.PARAMETER_MESSAGE_BODY);
+		String stMessageSender = getParameter(req, RequestParameters.PARAMETER_MESSAGE_SENDER);
 		// Convert Time Stamp to Long
 		long timeStamp = Long.parseLong(stTimeStamp);
 		MessageInfo messageInfo = new MessageInfo(stMessageBody, stMessageSender, timeStamp);
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		logger.log(Level.INFO, "Processing Post Message Request to Database");
-		ChatCode chatCodeJoinSuccess = ChatManager.chatcodePostMessage(userInfo, chatRoomInfo, messageInfo);
+		ChatCode chatCodeJoinSuccess = ChatServerManager.chatcodePostMessage(userInfo, chatRoomInfo, messageInfo);
 		logger.log(Level.INFO, "Request completed");
 				
 		JSONObject jsonResponse = new JSONObject();

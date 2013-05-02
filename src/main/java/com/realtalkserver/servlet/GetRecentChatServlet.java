@@ -19,7 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.realtalkserver.util.ChatCode;
-import com.realtalkserver.util.ChatManager;
+import com.realtalkserver.util.ChatServerManager;
 import com.realtalkserver.util.ChatResultSet;
 import com.realtalkserver.util.ChatRoomInfo;
 import com.realtalkserver.util.MessageInfo;
@@ -39,21 +39,22 @@ public class GetRecentChatServlet extends BaseServlet {
 			throws ServletException, IOException {		
 		// Room Info
 		logger.log(Level.INFO, "Retrieving Chat Room Information");
-		String stRoomName = req.getParameter(RequestParameters.PARAMETER_ROOM_NAME);
-		String stRoomId = req.getParameter(RequestParameters.PARAMETER_ROOM_ID);
+		String stRoomName = getParameter(req, RequestParameters.PARAMETER_ROOM_NAME);
+		String stRoomId = getParameter(req, RequestParameters.PARAMETER_ROOM_ID);
 		// TODO: Extra Room information may be required.
 		ChatRoomInfo chatroominfo = new ChatRoomInfo(stRoomName, stRoomId, "", 0, 0, "", 0, null);
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		// TimeStamp Info
 		logger.log(Level.INFO, "Retrieving timeStamp since last message retrieval");
-		String stTimeStamp = req.getParameter(RequestParameters.PARAMETER_TIMESTAMP);
+		String stTimeStamp = getParameter(req, RequestParameters.PARAMETER_TIMESTAMP);
 		// TODO: Check for invalid long.
-		long timeStamp = Long.parseLong(stTimeStamp);
+	    long timeStamp = Long.parseLong(stTimeStamp);
+
 		logger.log(Level.INFO, "Retrieval Successful");
 		
-		logger.log(Level.INFO, "Processing Get Recent Chat Request to Database"); 
-		ChatResultSet chatresultset = ChatManager.cResSetGetRecentChat(chatroominfo, new Timestamp(timeStamp));
+		logger.log(Level.INFO, "Processing Get Recent Chat Request to Database");
+		ChatResultSet chatresultset = ChatServerManager.cResSetGetRecentChat(chatroominfo, new Timestamp(timeStamp));
 		logger.log(Level.INFO, "Request completed");
 		
 		// Extract ChatResultSet Params
