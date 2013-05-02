@@ -4,6 +4,7 @@
 package com.realtalkserver.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +25,6 @@ import com.realtalkserver.util.ChatRoomInfo;
 import com.realtalkserver.util.MessageInfo;
 import com.realtalkserver.util.RequestParameters;
 import com.realtalkserver.util.ResponseParameters;
-import com.realtalkserver.util.UserInfo;
 
 /**
  * Servlet that gets the recent chat messages after a given time stamp.
@@ -32,6 +32,7 @@ import com.realtalkserver.util.UserInfo;
  * @author Colin Kho
  *
  */
+@SuppressWarnings("serial")
 public class GetRecentChatServlet extends BaseServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -84,12 +85,41 @@ public class GetRecentChatServlet extends BaseServlet {
 				// Add messages to json response
 				jsonResponse.put(RequestParameters.PARAMETER_MESSAGE_MESSAGES, jsonarrayMessages);
 			} else if (ChatCode.ROOM_ERROR == chatcodeGetPost) {
+				// Encountered Room Error due to params related to Chat Room Info.
 				jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, "false");
 				jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_ROOM);
-				//jsonResponse.put(ResponseParameters.RESPONSE_ERROR_CODE_MESSAGE, ResponseParameters.)
+				jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_ROOM_ERROR);
+			} else if (ChatCode.ROOM_ERROR_NAME_INVALID == chatcodeGetPost) {
+				// Encountered an invalid Room Name
+				jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, "false");
+				jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_ROOM);
+				jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_ROOM_NAME_INVALID);
+			} else if (ChatCode.ROOM_ERROR_ID_INVALID == chatcodeGetPost) {
+				// Encountered an invalid Room ID.
+				jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, "false");
+				jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_ROOM);
+				jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_ROOM_ROOMID_INVALID);
+			} else if (ChatCode.MESSAGE_ERROR == chatcodeGetPost) {
+				// Encountered a message error.
+				jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, "false");
+				jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_MESSAGE);
+				jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_MESSAGE_ERROR);
+			} else {
+				// Encountered Failure with unknown error
+				jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, "false");
+				jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE);
+				jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_ERROR);				
 			}
 		} catch (JSONException e) {
 			// Exception not thrown because key is not null.
 		}
+		
+		logger.log(Level.INFO, "Setting up response successful");
+		
+		resp.setContentType("application/json");
+		PrintWriter out = resp.getWriter();
+		out.write(jsonResponse.toString());
+		setSuccess(resp);
+		logger.log(Level.INFO, "POST Request to Pull Recent Chat Messages completed");
 	}
 }

@@ -91,7 +91,7 @@ public class PostMessageServlet extends BaseServlet {
 			    	jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_MESSAGE_ERROR);
 				} else {
 					// Generic Error
-					jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR);
+					jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE);
 					jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, "");
 				}
 			}

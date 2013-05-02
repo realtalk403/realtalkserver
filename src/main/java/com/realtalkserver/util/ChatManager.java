@@ -3,11 +3,14 @@
  */
 package com.realtalkserver.util;
 
+<<<<<<< HEAD
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+=======
+>>>>>>> 6a0f030934ebff4a752c773fefe7ac9d698a8715
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
