@@ -96,4 +96,12 @@
       <servlet-name>postMessage</servlet-name>
       <url-pattern>/post</url-pattern>
   </servlet-mapping>
+  <servlet>
+      <servlet-name>getRecentChat</servlet-name>
+      <servlet-class>com.realtalkserver.servlet.GetRecentChatServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>getRecentChat</servlet-name>
+      <url-pattern>/pullRecentChat</url-pattern>
+  </servlet-mapping>
 </web-app>

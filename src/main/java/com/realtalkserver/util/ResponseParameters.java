@@ -26,10 +26,13 @@ public class ResponseParameters {
     // Indicates Message Info has incurred an error with the server.
     public static final String RESPONSE_ERROR_CODE_MESSAGE = "ERROR_MESSAGE";
     // Generic Error Code
-    public static final String RESPONSE_ERROR = "ERROR";
+    public static final String RESPONSE_ERROR_CODE = "ERROR";
     
     // Error Messages: Format (MESSAGE_<Context>_<Context-Parameter>_<Reason>)
     // Note          : Context Parameter is optional
+    
+    // GENERIC ERROR MESSAGE
+    public static final String RESPONSE_MESSAGE_ERROR = "";
     
     // USER ERROR MESSAGES
     // Message indicating that User's user name is not found or invalid.
