@@ -251,9 +251,9 @@ public class UserManager {
 			preparedStatement.setString(2, password);
 
 			// Execute the SELECT query
-			ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
+			ResultSet resultSet = preparedStatement.executeQuery();
 			DatabaseUtility.closeConnection(connection);
-
+			System.err.println("connection successful");
 			// Check for correct result
 			if (resultSet.first()) {
 				return true;
