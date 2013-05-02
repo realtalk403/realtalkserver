@@ -60,13 +60,13 @@ public class SQLQueries {
 			"SELECT user_name, time_sent, content " +
 			"FROM messages " +
 			"WHERE room_id = ? " +
-			"AND timestamp > ? " +
-			"ORDER BY timestamp DESC;";
+			"AND time_sent > ? " +
+			"ORDER BY time_sent DESC;";
 
 	public static final String QUERY_GET_ALL_MESSAGES = 
 			"SELECT user_name, time_sent, content " +
 			"FROM messages " +
 			"WHERE room_id = ? " +
-			"ORDER BY timestamp DESC;";
+			"ORDER BY time_sent DESC;";
 
 }
