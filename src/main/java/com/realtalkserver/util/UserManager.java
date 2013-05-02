@@ -46,19 +46,14 @@ public class UserManager {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ADD_USER);
-			preparedStatement.setString(1, userName);
-			preparedStatement.setString(2, regId);
-			preparedStatement.setString(3, password);
+			PreparedStatement preparedstatement = connection.prepareStatement(QUERY_ADD_USER);
+			preparedstatement.setString(1, userName);
+			preparedstatement.setString(2, regId);
+			preparedstatement.setString(3, password);
 
-			System.err.println("statement prepared successfully");
-			
 			// Execute the INSERT query
-			int result = preparedStatement.executeUpdate();
-			System.err.println("query returned successfully");
+			int result = preparedstatement.executeUpdate();
 			DatabaseUtility.closeConnection(connection);
-
-			System.err.println("connection closed successfully");
 
 			// Check for correct result
 			if (result == 1) {
@@ -102,11 +97,11 @@ public class UserManager {
 			if (fAuthenticateUser(userName, password)) {
 				// Connect to the database and prepare the query
 				Connection connection = DatabaseUtility.connectionGetConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(QUERY_REMOVE_USER);
-				preparedStatement.setString(1, userName);
+				PreparedStatement preparedstatement = connection.prepareStatement(QUERY_REMOVE_USER);
+				preparedstatement.setString(1, userName);
 	
 				// Execute the DELETE query
-				int result = preparedStatement.executeUpdate();
+				int result = preparedstatement.executeUpdate();
 				DatabaseUtility.closeConnection(connection);
 	
 				// Check for correct result
@@ -129,7 +124,6 @@ public class UserManager {
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
 			System.err.println("Driver error");
-			e.printStackTrace();
 			return false;
 		}
 	}
@@ -150,12 +144,12 @@ public class UserManager {
 			if (fAuthenticateUser(userName, oldPassword)) {
 				// Connect to the database and prepare the query
 				Connection connection = DatabaseUtility.connectionGetConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(QUERY_CHANGE_PASSWORD);
-				preparedStatement.setString(1, newPassword);
-				preparedStatement.setString(2, userName);
+				PreparedStatement preparedstatement = connection.prepareStatement(QUERY_CHANGE_PASSWORD);
+				preparedstatement.setString(1, newPassword);
+				preparedstatement.setString(2, userName);
 
 				// Execute the UPDATE query
-				int result = preparedStatement.executeUpdate();
+				int result = preparedstatement.executeUpdate();
 				DatabaseUtility.closeConnection(connection);
 
 				// Check for correct result
@@ -178,7 +172,6 @@ public class UserManager {
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
 			System.err.println("Driver error");
-			e.printStackTrace();
 			return false;
 		}
 	}
@@ -198,12 +191,12 @@ public class UserManager {
 			if (fAuthenticateUser(userName, password)) {
 				// Connect to the database and prepare the query
 				Connection connection = DatabaseUtility.connectionGetConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(QUERY_CHANGE_ID);
-				preparedStatement.setString(1, newRegId);
-				preparedStatement.setString(2, userName);
+				PreparedStatement preparedstatement = connection.prepareStatement(QUERY_CHANGE_ID);
+				preparedstatement.setString(1, newRegId);
+				preparedstatement.setString(2, userName);
 	
 				// Execute the UPDATE query
-				int result = preparedStatement.executeUpdate();
+				int result = preparedstatement.executeUpdate();
 				DatabaseUtility.closeConnection(connection);
 	
 				// Check for correct result
@@ -226,7 +219,6 @@ public class UserManager {
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
 			System.err.println("Driver error");
-			e.printStackTrace();
 			return false;
 		}
 	}
@@ -238,7 +230,6 @@ public class UserManager {
 	 * 
 	 * @param userName User's username
 	 * @param password User's password
-	 * @param regId    User's Google Cloud Messaging Registration ID
 	 * @return         true if user's exists and user's credentials are correct.
 	 *                 false if otherwise.
 	 */
@@ -246,12 +237,12 @@ public class UserManager {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(QUERY_AUTHENTICATE);
-			preparedStatement.setString(1, userName);
-			preparedStatement.setString(2, password);
+			PreparedStatement preparedstatement = connection.prepareStatement(QUERY_AUTHENTICATE);
+			preparedstatement.setString(1, userName);
+			preparedstatement.setString(2, password);
 
 			// Execute the SELECT query
-			ResultSet resultSet = preparedStatement.executeQuery();
+			ResultSet resultSet = preparedstatement.executeQuery();
 			
 			// Check for correct result
 			if (resultSet.next()) {
@@ -260,7 +251,6 @@ public class UserManager {
 				return true;
 			} else {
 				// 0 rows: User does not exist or the credentials are incorrect
-				System.err.println("Authentication failed");
 				resultSet.close();
 				DatabaseUtility.closeConnection(connection);
 				return false;
@@ -274,7 +264,6 @@ public class UserManager {
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
 			System.err.println("Driver error");
-			e.printStackTrace();
 			return false;
 		}
 	}
