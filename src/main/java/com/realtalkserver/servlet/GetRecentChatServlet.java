@@ -41,7 +41,7 @@ public class GetRecentChatServlet extends BaseServlet {
 		String stRoomName = req.getParameter(RequestParameters.PARAMETER_ROOM_NAME);
 		String stRoomId = req.getParameter(RequestParameters.PARAMETER_ROOM_ID);
 		// TODO: Extra Room information may be required.
-		ChatRoomInfo chatroominfo = new ChatRoomInfo(stRoomName, stRoomId, "", "", 0, null);
+		ChatRoomInfo chatroominfo = new ChatRoomInfo(stRoomName, stRoomId, "", 0, 0, "", 0, null);
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		// TimeStamp Info

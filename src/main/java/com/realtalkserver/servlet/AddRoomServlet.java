@@ -37,9 +37,10 @@ public class AddRoomServlet extends BaseServlet {
         
         String stRoomId = getParameter(req, RequestParameters.PARAMETER_ROOM_ID);
         String stRoomName = getParameter(req, RequestParameters.PARAMETER_ROOM_NAME);
+        String stRoomDescription = getParameter(req, RequestParameters.PARAMETER_ROOM_DESCRIPTION);
         
         UserInfo userinfo = new UserInfo(stUser, stPwd, stRegId);
-        ChatRoomInfo chatroominfo = new ChatRoomInfo(stRoomName, stRoomId, "", "", 1, null);
+        ChatRoomInfo chatroominfo = new ChatRoomInfo(stRoomName, stRoomId, stRoomDescription, 0, 0, stUser, 1, null);
         // Add room and generate response to indicate if successful
         int iChatroom = ChatManager.iAddRoom(userinfo, chatroominfo);
         

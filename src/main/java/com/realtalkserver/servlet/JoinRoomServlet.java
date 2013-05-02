@@ -46,7 +46,7 @@ public class JoinRoomServlet extends BaseServlet {
 		String stRoomName = req.getParameter(RequestParameters.PARAMETER_ROOM_NAME);
 		String stRoomId = req.getParameter(RequestParameters.PARAMETER_ROOM_ID);
 		// TODO: Extra Room information may be required.
-		ChatRoomInfo chatRoomInfo = new ChatRoomInfo(stRoomName, stRoomId, "", "", 0, null);
+		ChatRoomInfo chatRoomInfo = new ChatRoomInfo(stRoomName, stRoomId, "", 0, 0, "", 0, null);
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		logger.log(Level.INFO, "Processing Join Request to Database");
