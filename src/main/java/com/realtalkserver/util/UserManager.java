@@ -252,14 +252,15 @@ public class UserManager {
 
 			// Execute the SELECT query
 			ResultSet resultSet = preparedStatement.executeQuery();
-			DatabaseUtility.closeConnection(connection);
-			System.err.println("connection successful");
+			
 			// Check for correct result
 			if (resultSet.first()) {
+				DatabaseUtility.closeConnection(connection);
 				return true;
 			} else {
 				// 0 rows: User does not exist or the credentials are incorrect
 				System.err.println("Authentication failed");
+				DatabaseUtility.closeConnection(connection);
 				return false;
 			}
 		} catch (URISyntaxException e) {
