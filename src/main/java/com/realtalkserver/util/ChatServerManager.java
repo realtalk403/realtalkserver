@@ -212,13 +212,14 @@ public class ChatServerManager {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_RECENT_MESSAGES);
+			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_RECENT_MESSAGES, 
+					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			preparedstatement.setString(1, chatRoomInfo.getId());
 			preparedstatement.setTimestamp(2, timestamp);
 
 			// Execute the SELECT query
 			ResultSet resultset = preparedstatement.executeQuery();
-
+			
 			// Check for correct result
 			if (resultset.next()) {
 				// Messages retrieved: put all messages into a list
@@ -266,7 +267,8 @@ public class ChatServerManager {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ALL_MESSAGES);
+			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ALL_MESSAGES, 
+					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			preparedstatement.setString(1, chatRoomInfo.getId());
 
 			// Execute the SELECT query
