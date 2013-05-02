@@ -3,8 +3,7 @@
  */
 package com.realtalkserver.util;
 
-import java.sql.Time;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * Immutable class that holds a information about a chat message.
@@ -15,8 +14,7 @@ import java.sql.Date;
 public class MessageInfo {
     private String body;
     private String sender;
-    private Date date;
-    private Time time;
+    private Timestamp timeStamp;
     
     
 
@@ -26,13 +24,28 @@ public class MessageInfo {
      * @param body
      * @param sender
      * @param date
-     * @param time
+     * @param timeStamp TimeStamp object of when room was created.
      */
-    public MessageInfo(String body, String sender, Date date, Time time) {
+    public MessageInfo(String body, String sender,Timestamp timeStamp) {
         this.body = body;
         this.sender = sender;
-        this.date = date;
-        this.time = time;
+        this.timeStamp = timeStamp;
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param body
+     * @param sender
+     * @param date
+     * @param timeStamp Timestamp of when room was created in the
+     *                  form of a long where it is the milliseconds 
+     *                  since January 1, 1970, 00:00:00 GMT 
+     */
+    public MessageInfo(String body, String sender, long timeStamp) {
+        this.body = body;
+        this.sender = sender;
+        this.timeStamp = new Timestamp(timeStamp);
     }
 
     /**
@@ -48,20 +61,11 @@ public class MessageInfo {
     public String getSender() {
         return sender;
     }
-
-    /**
-     * @return the date
-     */
-    public Date getDate() {
-        return date;
-    }
-
-    /**
-     * @return the time
-     */
-    public Time getTime() {
-        return time;
-    }
-
     
+    /**
+     * @return the timestamp
+     */
+	public Timestamp getTimeStamp() {
+		return new Timestamp(timeStamp.getTime());
+	}
 }
