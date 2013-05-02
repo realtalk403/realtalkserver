@@ -13,7 +13,8 @@ public enum ChatCode {
     SUCCESS,
     FAILURE,
     ROOM_ERROR,
-    ROOM_ABSENT,
+    ROOM_ERROR_NAME_INVALID,
+    ROOM_ERROR_ID_INVALID,
     USER_ERROR,
     MESSAGE_ERROR
 }
