@@ -21,16 +21,16 @@ public class UserManager {
 			"INSERT INTO users values(?, ?, ?);";
 
 	private static final String QUERY_REMOVE_USER = 
-			"DELETE FROM users WHERE user_name = '?';";
+			"DELETE FROM users WHERE user_name = ?;";
 
 	private static final String QUERY_CHANGE_PASSWORD = 
-			"UPDATE users SET password = '?' WHERE user_name = '?';";
+			"UPDATE users SET password = ? WHERE user_name = ?;";
 
 	private static final String QUERY_CHANGE_ID = 
-			"UPDATE users SET device_id = '?' WHERE user_name = '?';";
+			"UPDATE users SET device_id = ? WHERE user_name = ?;";
 
 	private static final String QUERY_AUTHENTICATE = 
-			"SELECT * FROM users WHERE user_name = '?' AND password = '?' AND device_id = '?';";
+			"SELECT * FROM users WHERE user_name = ? AND password = ? AND device_id = ?;";
 
 	/**
 	 * Adds a User to the User Database and returns true if user was successfully
@@ -46,28 +46,21 @@ public class UserManager {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
-			System.err.println("connected to db successfully");
 			PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ADD_USER);
 			preparedStatement.setString(1, userName);
 			preparedStatement.setString(2, regId);
 			preparedStatement.setString(3, password);
 
 			System.err.println("statement prepared successfully");
+			
 			// Execute the INSERT query
 			int result = preparedStatement.executeUpdate();
-			//ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
 			System.err.println("query returned successfully");
 			DatabaseUtility.closeConnection(connection);
 
 			System.err.println("connection closed successfully");
 
-
-			//System.err.println(resultSet.toString());
-
 			// Check for correct result
-//			if (resultSet.first() && resultSet.getInt("count") == 1) {
-//			    System.err.println("Add success");
-//				return true;
 			if (result == 1) {
 				// User was added
 				return true;
@@ -78,15 +71,12 @@ public class UserManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: user was not added.
-
 			e.printStackTrace();
-
 		    System.err.print("Connection failed");
-
 			return false;
 		} catch (SQLException e) {
-		    System.err.print("Query failed");
 			// SQL INSERT query failed: user was not added.
+		    System.err.print("Query failed");
 			e.printStackTrace();
 			return false;
 		} catch (ClassNotFoundException e) {
@@ -115,11 +105,11 @@ public class UserManager {
 			preparedStatement.setString(1, userName);
 
 			// Execute the DELETE query
-			ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
+			int result = preparedStatement.executeUpdate();
 			DatabaseUtility.closeConnection(connection);
 
 			// Check for correct result
-			if (resultSet.first() && resultSet.getInt("count") == 1) {
+			if (result == 1) {
 				return true;
 			} else {
 				// User was not removed
@@ -161,11 +151,11 @@ public class UserManager {
 				preparedStatement.setString(2, userName);
 
 				// Execute the UPDATE query
-				ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
+				int result = preparedStatement.executeUpdate();
 				DatabaseUtility.closeConnection(connection);
 
 				// Check for correct result
-				if (resultSet.first() && resultSet.getInt("count") == 1) {
+				if (result == 1) {
 					return true;
 				} else {
 					// Password was not changed
@@ -208,11 +198,11 @@ public class UserManager {
 			preparedStatement.setString(2, userName);
 
 			// Execute the UPDATE query
-			ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
+			int result = preparedStatement.executeUpdate();
 			DatabaseUtility.closeConnection(connection);
 
 			// Check for correct result
-			if (resultSet.first() && resultSet.getInt("count") == 1) {
+			if (result == 1) {
 				return true;
 			} else {
 				// ID was not changed
