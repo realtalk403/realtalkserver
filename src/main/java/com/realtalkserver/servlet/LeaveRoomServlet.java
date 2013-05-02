@@ -15,7 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.realtalkserver.util.ChatCode;
-import com.realtalkserver.util.ChatManager;
+import com.realtalkserver.util.ChatServerManager;
 import com.realtalkserver.util.ChatRoomInfo;
 import com.realtalkserver.util.RequestParameters;
 import com.realtalkserver.util.ResponseParameters;
@@ -34,22 +34,22 @@ public class LeaveRoomServlet extends BaseServlet {
 			throws ServletException, IOException {
 		// User Info
 		logger.log(Level.INFO, "Retrieving User Information");
-		String stUserName = req.getParameter(RequestParameters.PARAMETER_USER);
-		String stRegId = req.getParameter(RequestParameters.PARAMETER_REG_ID);
-		String stPwd = req.getParameter(RequestParameters.PARAMETER_PWORD);
+		String stUserName = getParameter(req, RequestParameters.PARAMETER_USER);
+		String stRegId = getParameter(req, RequestParameters.PARAMETER_REG_ID);
+		String stPwd = getParameter(req, RequestParameters.PARAMETER_PWORD);
 		UserInfo userInfo = new UserInfo(stUserName, stRegId, stPwd);
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		// Room Info
 		logger.log(Level.INFO, "Retrieving Chat Room Information");
-		String stRoomName = req.getParameter(RequestParameters.PARAMETER_ROOM_NAME);
-		String stRoomId = req.getParameter(RequestParameters.PARAMETER_ROOM_ID);
+		String stRoomName = getParameter(req, RequestParameters.PARAMETER_ROOM_NAME);
+		String stRoomId = getParameter(req, RequestParameters.PARAMETER_ROOM_ID);
 		// TODO: Extra Room information may be required.
 		ChatRoomInfo chatRoomInfo = new ChatRoomInfo(stRoomName, stRoomId, "", "", 0, null);
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		logger.log(Level.INFO, "Processing Leave Request to Database");
-		ChatCode chatCodeJoinSuccess = ChatManager.chatcodeLeaveRoom(userInfo, chatRoomInfo);
+		ChatCode chatCodeJoinSuccess = ChatServerManager.chatcodeLeaveRoom(userInfo, chatRoomInfo);
 		logger.log(Level.INFO, "Request completed");
 		
 		JSONObject jsonResponse = new JSONObject();

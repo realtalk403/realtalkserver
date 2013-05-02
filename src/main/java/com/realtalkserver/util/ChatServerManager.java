@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  * @author Colin Kho
  *
  */
-public class ChatManager {
+public class ChatServerManager {
     /**
      * Adds new a room to the chat server given the params and returns the chatId.
      * 
