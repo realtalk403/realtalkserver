@@ -254,12 +254,14 @@ public class UserManager {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			
 			// Check for correct result
-			if (resultSet.first()) {
+			if (resultSet.next()) {
+				resultSet.close();
 				DatabaseUtility.closeConnection(connection);
 				return true;
 			} else {
 				// 0 rows: User does not exist or the credentials are incorrect
 				System.err.println("Authentication failed");
+				resultSet.close();
 				DatabaseUtility.closeConnection(connection);
 				return false;
 			}
