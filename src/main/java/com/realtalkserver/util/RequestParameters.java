@@ -31,6 +31,10 @@ public class RequestParameters {
     public static final String PARAMETER_MESSAGE_BODY = "PARAMETER_MESSAGE_BODY";
     // Message Sender
     public static final String PARAMETER_MESSAGE_SENDER = "PARAMETER_MESSAGE_SENDER";
+    // Message List
+    public static final String PARAMETER_MESSAGE_MESSAGES = "PARAMETER_MESSAGE_MESSAGES";
     // Message Timestamp
     public static final String PARAMETER_MESSAGE_TIMESTAMP = "PARAMETER_MESSAGE_TIMESTAMP";
+    // Generic TimeStamp Parameter
+    public static final String PARAMETER_TIMESTAMP = "PARAMETER_TIMESTAMP";
 }

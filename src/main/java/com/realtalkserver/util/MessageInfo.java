@@ -11,12 +11,10 @@ import java.sql.Timestamp;
  * @author Colin Kho
  *
  */
-public class MessageInfo {
+public class MessageInfo implements Comparable<MessageInfo> {
     private String body;
     private String sender;
-    private Timestamp timeStamp;
-    
-    
+    private Timestamp timeStamp;  
 
     /**
      * Constructor
@@ -67,5 +65,17 @@ public class MessageInfo {
      */
 	public Timestamp getTimeStamp() {
 		return new Timestamp(timeStamp.getTime());
+	}
+	
+	/**
+	 * Defines on how MessageInfo objects are compared. They are compared according to
+	 * their timestamps.
+	 * 
+	 * @param arg MessageInfo to be compared
+	 * @return 0 if MessageInfo are equal, -1 if this has an earlier time stamp than arg
+	 *         and 1 if this has a later time stamp than arg
+	 */
+	public int compareTo(MessageInfo arg) {
+		return this.timeStamp.compareTo(arg.timeStamp);
 	}
 }

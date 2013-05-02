@@ -33,7 +33,7 @@ public class AuthenticateServlet extends BaseServlet {
         String stPwd = getParameter(req, RequestParameters.PARAMETER_PWORD);
         
         // Authenticate and generate response to indicate if successful
-        boolean fAuthenticated = UserManager.fAuthenticateUser(stUser, stPwd, stRegId);
+        boolean fAuthenticated = UserManager.fAuthenticateUser(stUser, stPwd);
         
         // Generate JSON response
         JSONObject jsonResponse = new JSONObject();

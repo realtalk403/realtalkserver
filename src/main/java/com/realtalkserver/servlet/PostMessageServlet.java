@@ -59,12 +59,12 @@ public class PostMessageServlet extends BaseServlet {
 		MessageInfo messageInfo = new MessageInfo(stMessageBody, stMessageSender, timeStamp);
 		logger.log(Level.INFO, "Retrieval Successful");
 		
-		logger.log(Level.INFO, "Processing Join Request to Database");
+		logger.log(Level.INFO, "Processing Post Message Request to Database");
 		ChatCode chatCodeJoinSuccess = ChatManager.chatcodePostMessage(userInfo, chatRoomInfo, messageInfo);
 		logger.log(Level.INFO, "Request completed");
-		
-		
+				
 		JSONObject jsonResponse = new JSONObject();
+		
 		try {
 			jsonResponse.put(RequestParameters.PARAMETER_USER, stUserName);
 			jsonResponse.put(RequestParameters.PARAMETER_NEW_REG_ID, stRegId);
@@ -76,7 +76,7 @@ public class PostMessageServlet extends BaseServlet {
 				jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, "true");
 			} else {
 				jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, "false");
-				// Set error code
+				// Set error code response
 				if (ChatCode.USER_ERROR == chatCodeJoinSuccess) {
 					// User Error
 					jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_USER);
@@ -86,6 +86,7 @@ public class PostMessageServlet extends BaseServlet {
 					jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_ROOM);
 					jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_ROOM_ERROR);
 			    } else if (ChatCode.MESSAGE_ERROR == chatCodeJoinSuccess) {
+			    	// Message Error
 			    	jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_MESSAGE);
 			    	jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_MESSAGE_ERROR);
 				} else {
@@ -103,6 +104,6 @@ public class PostMessageServlet extends BaseServlet {
 		PrintWriter out = resp.getWriter();
 		out.write(jsonResponse.toString());
 		setSuccess(resp);
-		logger.log(Level.INFO, "POST Request to Join Room completed");
+		logger.log(Level.INFO, "POST Request to Post Message completed");
 	}
 }

@@ -5,6 +5,7 @@ package com.realtalkserver.util;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 
 /**
  * ChatManager is a class that manages the chat logs within the server. It provides
@@ -69,12 +70,11 @@ public class ChatManager {
      * 
      * 
      * @param chatRoomInfo ChatRoom's Information
-     * @param Date         date since last update.
-     * @param Time         Time since last update.
+     * @param timeStamp    Messages to retrieve after the indicated timeStamp
      * @return             ChatResultSet that has the most recent messages if successful(ChatCode), otherwise
      *                     ChatResultSet's ChatCode reflects the appropriate error.
      */
-    public static ChatResultSet cResSetGetRecentChat(ChatRoomInfo chatRoomInfo, Date date, Time time) {
+    public static ChatResultSet cResSetGetRecentChat(ChatRoomInfo chatRoomInfo, Timestamp timeStamp) {
         throw new UnsupportedOperationException();
     }
     

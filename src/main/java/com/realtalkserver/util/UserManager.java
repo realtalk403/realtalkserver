@@ -18,19 +18,19 @@ public class UserManager {
 	// These are essentially SQL query templates. Question marks
 	// are replaced by parameters in the methods in this class.
 	private static final String QUERY_ADD_USER = 
-			"INSERT INTO users values('?', '?', '?');";
+			"INSERT INTO users values(?, ?, ?);";
 
 	private static final String QUERY_REMOVE_USER = 
-			"DELETE FROM users WHERE user_name = '?';";
+			"DELETE FROM users WHERE user_name = ?;";
 
 	private static final String QUERY_CHANGE_PASSWORD = 
-			"UPDATE users SET password = '?' WHERE user_name = '?';";
+			"UPDATE users SET password = ? WHERE user_name = ?;";
 
 	private static final String QUERY_CHANGE_ID = 
-			"UPDATE users SET device_id = '?' WHERE user_name = '?';";
+			"UPDATE users SET device_id = ? WHERE user_name = ?;";
 
 	private static final String QUERY_AUTHENTICATE = 
-			"SELECT * FROM users WHERE user_name = '?' AND password = '?' AND device_id = '?';";
+			"SELECT * FROM users WHERE user_name = ? AND password = ?;";
 
 	/**
 	 * Adds a User to the User Database and returns true if user was successfully
@@ -46,17 +46,18 @@ public class UserManager {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ADD_USER);
-			preparedStatement.setString(1, userName);
-			preparedStatement.setString(2, regId);
-			preparedStatement.setString(3, password);
+			PreparedStatement preparedstatement = connection.prepareStatement(QUERY_ADD_USER);
+			preparedstatement.setString(1, userName);
+			preparedstatement.setString(2, regId);
+			preparedstatement.setString(3, password);
 
 			// Execute the INSERT query
-			ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
+			int result = preparedstatement.executeUpdate();
 			DatabaseUtility.closeConnection(connection);
 
 			// Check for correct result
-			if (resultSet.first() && resultSet.getInt("count") == 1) {
+			if (result == 1) {
+				// User was added
 				return true;
 			} else {
 				// User was not added
@@ -64,9 +65,15 @@ public class UserManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: user was not added.
+			e.printStackTrace();
 			return false;
 		} catch (SQLException e) {
-			// SQL INSERT query failed: user was not added.
+			// SQL INSERT query failed: user was not added
+			e.printStackTrace();
+			return false;
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -83,20 +90,25 @@ public class UserManager {
 	 */
 	public static boolean fRemoveUser(String userName, String password, String regId) {
 		try {
-			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(QUERY_REMOVE_USER);
-			preparedStatement.setString(1, userName);
-
-			// Execute the DELETE query
-			ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
-			DatabaseUtility.closeConnection(connection);
-
-			// Check for correct result
-			if (resultSet.first() && resultSet.getInt("count") == 1) {
-				return true;
+			if (fAuthenticateUser(userName, password)) {
+				// Connect to the database and prepare the query
+				Connection connection = DatabaseUtility.connectionGetConnection();
+				PreparedStatement preparedstatement = connection.prepareStatement(QUERY_REMOVE_USER);
+				preparedstatement.setString(1, userName);
+	
+				// Execute the DELETE query
+				int result = preparedstatement.executeUpdate();
+				DatabaseUtility.closeConnection(connection);
+	
+				// Check for correct result
+				if (result == 1) {
+					return true;
+				} else {
+					// User was not removed
+					return false;
+				}
 			} else {
-				// User was not removed
+				// Authentication failed: user not removed
 				return false;
 			}
 		} catch (URISyntaxException e) {
@@ -104,6 +116,9 @@ public class UserManager {
 			return false;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: user was not added.
+			return false;
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
 			return false;
 		}
 	}
@@ -121,20 +136,19 @@ public class UserManager {
 	 */
 	public static boolean fChangePassword(String userName, String oldPassword, String newPassword, String regId) {
 		try {
-			boolean fAuthentication = fAuthenticateUser(userName, oldPassword, regId);
-			if (fAuthentication) {
+			if (fAuthenticateUser(userName, oldPassword)) {
 				// Connect to the database and prepare the query
 				Connection connection = DatabaseUtility.connectionGetConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(QUERY_CHANGE_PASSWORD);
-				preparedStatement.setString(1, newPassword);
-				preparedStatement.setString(2, userName);
+				PreparedStatement preparedstatement = connection.prepareStatement(QUERY_CHANGE_PASSWORD);
+				preparedstatement.setString(1, newPassword);
+				preparedstatement.setString(2, userName);
 
 				// Execute the UPDATE query
-				ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
+				int result = preparedstatement.executeUpdate();
 				DatabaseUtility.closeConnection(connection);
 
 				// Check for correct result
-				if (resultSet.first() && resultSet.getInt("count") == 1) {
+				if (result == 1) {
 					return true;
 				} else {
 					// Password was not changed
@@ -149,6 +163,9 @@ public class UserManager {
 			return false;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: user was not added.
+			return false;
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
 			return false;
 		}
 	}
@@ -165,21 +182,26 @@ public class UserManager {
 	 */
 	public static boolean fChangeId(String userName, String password, String newRegId) {
 		try {
-			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(QUERY_CHANGE_ID);
-			preparedStatement.setString(1, newRegId);
-			preparedStatement.setString(2, userName);
-
-			// Execute the UPDATE query
-			ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
-			DatabaseUtility.closeConnection(connection);
-
-			// Check for correct result
-			if (resultSet.first() && resultSet.getInt("count") == 1) {
-				return true;
+			if (fAuthenticateUser(userName, password)) {
+				// Connect to the database and prepare the query
+				Connection connection = DatabaseUtility.connectionGetConnection();
+				PreparedStatement preparedstatement = connection.prepareStatement(QUERY_CHANGE_ID);
+				preparedstatement.setString(1, newRegId);
+				preparedstatement.setString(2, userName);
+	
+				// Execute the UPDATE query
+				int result = preparedstatement.executeUpdate();
+				DatabaseUtility.closeConnection(connection);
+	
+				// Check for correct result
+				if (result == 1) {
+					return true;
+				} else {
+					// ID was not changed
+					return false;
+				}
 			} else {
-				// ID was not changed
+				// Authentication failed: ID does not change.
 				return false;
 			}
 		} catch (URISyntaxException e) {
@@ -187,6 +209,9 @@ public class UserManager {
 			return false;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: user was not added.
+			return false;
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
 			return false;
 		}
 	}
@@ -198,28 +223,29 @@ public class UserManager {
 	 * 
 	 * @param userName User's username
 	 * @param password User's password
-	 * @param regId    User's Google Cloud Messaging Registration ID
 	 * @return         true if user's exists and user's credentials are correct.
 	 *                 false if otherwise.
 	 */
-	public static boolean fAuthenticateUser(String userName, String password, String regId) {
+	public static boolean fAuthenticateUser(String userName, String password) {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(QUERY_AUTHENTICATE);
-			preparedStatement.setString(1, userName);
-			preparedStatement.setString(2, password);
-			preparedStatement.setString(3, regId);
+			PreparedStatement preparedstatement = connection.prepareStatement(QUERY_AUTHENTICATE);
+			preparedstatement.setString(1, userName);
+			preparedstatement.setString(2, password);
 
 			// Execute the SELECT query
-			ResultSet resultSet = DatabaseUtility.resultsetProcessQuery(preparedStatement);
-			DatabaseUtility.closeConnection(connection);
-
+			ResultSet resultSet = preparedstatement.executeQuery();
+			
 			// Check for correct result
-			if (resultSet.first()) {
+			if (resultSet.next()) {
+				resultSet.close();
+				DatabaseUtility.closeConnection(connection);
 				return true;
 			} else {
 				// 0 rows: User does not exist or the credentials are incorrect
+				resultSet.close();
+				DatabaseUtility.closeConnection(connection);
 				return false;
 			}
 		} catch (URISyntaxException e) {
@@ -227,6 +253,9 @@ public class UserManager {
 			return false;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: user was not added.
+			return false;
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
 			return false;
 		}
 	}

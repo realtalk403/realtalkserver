@@ -23,6 +23,9 @@ public class ChatResultSet {
      * @param chatCode
      */
     public ChatResultSet(List<MessageInfo> messages, ChatCode chatCode, int chatId) {
+    	if (messages == null) {
+    		messages = new ArrayList<MessageInfo>();
+    	}
         this.messages = messages;
         this.chatCode = chatCode;
         this.chatId = chatId;
@@ -39,7 +42,7 @@ public class ChatResultSet {
      * @return the messages
      */
     public List<MessageInfo> getMessages() {
-        return messages;
+        return new ArrayList<MessageInfo>(messages);
     }
 
     /**

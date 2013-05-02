@@ -34,7 +34,7 @@ public class PasswordServlet extends BaseServlet {
         
         String stNewPwd = getParameter(req, RequestParameters.PARAMETER_NEW_PWORD);
         
-        boolean fChangePwdSuccess = UserManager.fChangePassword(stUser, stPwd, stPwd, stNewPwd);
+        boolean fChangePwdSuccess = UserManager.fChangePassword(stUser, stPwd, stNewPwd, stRegId);
         
         // Generate JSON Response to the user.
         JSONObject jsonResponse = new JSONObject();
