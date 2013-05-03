@@ -60,6 +60,6 @@ public class RegisterServlet extends BaseServlet {
         PrintWriter out = resp.getWriter();
         out.write(jsonResponse.toString());
         setSuccess(resp);
-        logger.log(Level.INFO, "POST Request to Join Room completed");
+        logger.log(Level.INFO, "POST Request to RegisterServlet completed");
     }
 }
