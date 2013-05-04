@@ -49,8 +49,10 @@ public class RegisterServlet extends BaseServlet {
         try {
         	String stSuccessMsg = fAddUserSuccess ? "true" : "false";
         	jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, stSuccessMsg);
-        	jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_USER);
-        	jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_USER_ERROR);
+        	if (!fAddUserSuccess) {
+        		jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_USER);
+        		jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_USER_ERROR);
+        	}
         } catch (JSONException e) {
         	// Exception will never be thrown as key is not null.
         }
