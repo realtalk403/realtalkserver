@@ -46,9 +46,11 @@ public class RegistrationIdServlet extends BaseServlet {
         try {
         	String stSuccessMsg = fChangeIdSuccess ? "true" : "false";
         	jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, stSuccessMsg);
-        	jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_USER);
-        	jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_USER_ERROR);
-        } catch (JSONException e) {
+        	if (!fChangeIdSuccess) {
+        		jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_USER);
+        		jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_USER_ERROR);
+        	}
+		} catch (JSONException e) {
         	// Exception will never be throw because keys are not null
         }
         logger.log(Level.INFO, "Setting up response successful");
