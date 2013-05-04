@@ -45,8 +45,10 @@ public class UnregisterServlet extends BaseServlet {
         try {
         	String stSuccessMsg = fRemoveSuccess ? "true" : "false";
         	jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, stSuccessMsg);
-        	jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_USER);
-        	jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_USER_ERROR);
+        	if (!fRemoveSuccess) {
+        		jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_USER);
+        		jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_USER_ERROR);
+        	}
         } catch (JSONException e){
         	// Exception never thrown because key is never null.
         }
