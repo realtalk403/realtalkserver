@@ -220,27 +220,18 @@ public class ChatServerManager {
 			// Execute the SELECT query
 			ResultSet resultset = preparedstatement.executeQuery();
 			
-			// Check for correct result
-			if (resultset.next()) {
-				// Messages retrieved: put all messages into a list
-				List<MessageInfo> messages = new ArrayList<MessageInfo>();
-				resultset.beforeFirst();
-				while (resultset.next()) {
-					String stUsername = resultset.getString("user_name");
-					Timestamp timestampSent = resultset.getTimestamp("time_sent");
-					String stContent = resultset.getString("content");
-					messages.add(new MessageInfo(stContent, stUsername, timestampSent));
-				}
-
-				resultset.close();
-				DatabaseUtility.closeConnection(connection);
-				return new ChatResultSet(messages, ChatCode.SUCCESS);
-			} else {
-				// Messages not retrieved
-				resultset.close();
-				DatabaseUtility.closeConnection(connection);
-				return new ChatResultSet(ChatCode.FAILURE);
+			// Messages retrieved: put all messages into a list
+			List<MessageInfo> messages = new ArrayList<MessageInfo>();
+			while (resultset.next()) {
+				String stUsername = resultset.getString("user_name");
+				Timestamp timestampSent = resultset.getTimestamp("time_sent");
+				String stContent = resultset.getString("content");
+				messages.add(new MessageInfo(stContent, stUsername, timestampSent));
 			}
+
+			resultset.close();
+			DatabaseUtility.closeConnection(connection);
+			return new ChatResultSet(messages, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
 			e.printStackTrace();
