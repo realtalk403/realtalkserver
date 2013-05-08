@@ -300,7 +300,7 @@ public class ChatServerManager {
 	 * @param radiusMeters      radius to search within
 	 * @return            A ChatroomResultSet containing rooms and success/error messages 
 	 */
-	public static ChatRoomResultSet crrsNearbyRooms(double latitude, double longitude, double radiusMeters) {
+	public static ChatroomResultSet crrsNearbyRooms(double latitude, double longitude, double radiusMeters) {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
@@ -332,19 +332,19 @@ public class ChatServerManager {
 			resultset.close();
 			DatabaseUtility.closeConnection(connection);
 			// TODO: return value
-			return new ChatRoomResultSet(rooms, ChatCode.SUCCESS);
+			return new ChatroomResultSet(rooms, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
 			e.printStackTrace();
-			return new ChatRoomResultSet(null, ChatCode.FAILURE);
+			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		} catch (SQLException e) {
 			// SQL query failed: Messages not retrieved
 			e.printStackTrace();
-			return new ChatRoomResultSet(null, ChatCode.FAILURE);
+			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
 			e.printStackTrace();
-			return new ChatRoomResultSet(null, ChatCode.FAILURE);
+			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		}
 	}
 
