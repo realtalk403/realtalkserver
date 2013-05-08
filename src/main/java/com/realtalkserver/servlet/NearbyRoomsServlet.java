@@ -42,7 +42,7 @@ public class NearbyRoomsServlet extends BaseServlet {
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		logger.log(Level.INFO, "Processing Get Nearby Rooms Request to Database");
-		ChatRoomResultSet crrs = ChatServerManager.rgcriNearbyRooms(latitude, longitude, radiusMeters);
+		ChatRoomResultSet crrs = ChatServerManager.crrsNearbyRooms(latitude, longitude, radiusMeters);
 		logger.log(Level.INFO, "Request completed");
 		
 		// Extract ChatResultSet Params
