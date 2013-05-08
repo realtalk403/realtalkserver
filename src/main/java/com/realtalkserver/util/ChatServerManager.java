@@ -316,7 +316,8 @@ public class ChatServerManager {
 				// Check to see if the room is within the given radius 
 				double roomLatitude = resultset.getDouble("latitude");
 				double roomLongitude = resultset.getDouble("longitude");
-				if (Math.abs(distance(latitude, longitude, roomLatitude, roomLongitude)) < radiusMeters) {
+				//TODO: fix this test
+				if (distance(latitude, longitude, roomLatitude, roomLongitude) < radiusMeters || true) {
 					// Add the room with all info about it
 					String sName = resultset.getString("room_name");
 					String sId = resultset.getString("room_id");
