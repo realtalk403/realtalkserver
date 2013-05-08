@@ -13,7 +13,7 @@ import java.util.List;
  * @author Jory Rice
  *
  */
-public class ChatRoomResultSet {
+public class ChatroomResultSet {
     private List<ChatRoomInfo> rooms;
     private ChatCode chatCode;
     
@@ -21,7 +21,7 @@ public class ChatRoomResultSet {
      * @param messages
      * @param chatCode
      */
-    public ChatRoomResultSet(List<ChatRoomInfo> rooms, ChatCode chatCode) {
+    public ChatroomResultSet(List<ChatRoomInfo> rooms, ChatCode chatCode) {
     	if (rooms == null) {
     		rooms = new ArrayList<ChatRoomInfo>();
     	}
