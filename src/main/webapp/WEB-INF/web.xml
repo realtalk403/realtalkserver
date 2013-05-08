@@ -103,4 +103,12 @@
       <servlet-name>getChatLog</servlet-name>
       <url-pattern>/pullChat</url-pattern>
   </servlet-mapping>
+  <servlet>
+      <servlet-name>nearbyRooms</servlet-name>
+      <servlet-class>com.realtalkserver.servlet.NearbyRoomsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>nearbyRooms</servlet-name>
+      <url-pattern>/nearbyRooms</url-pattern>
+  </servlet-mapping>
 </web-app>
