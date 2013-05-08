@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import com.realtalkserver.util.ChatCode;
 import com.realtalkserver.util.ChatRoomInfo;
 import com.realtalkserver.util.ChatServerManager;
-import com.realtalkserver.util.ChatroomResultSet;
+import com.realtalkserver.util.ChatRoomResultSet;
 import com.realtalkserver.util.RequestParameters;
 import com.realtalkserver.util.ResponseParameters;
 
@@ -38,16 +38,16 @@ public class NearbyRoomsServlet extends BaseServlet {
 		logger.log(Level.INFO, "Retrieving Location Information");
 		double longitude = Double.valueOf(getParameter(req, RequestParameters.PARAMETER_USER_LATITUDE));
 		double latitude = Double.valueOf(getParameter(req, RequestParameters.PARAMETER_USER_LONGITUDE));
-		double radius = Double.valueOf(getParameter(req, RequestParameters.PARAMETER_USER_RADIUS));
+		double radiusMeters = Double.valueOf(getParameter(req, RequestParameters.PARAMETER_USER_RADIUS));
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		logger.log(Level.INFO, "Processing Get Nearby Rooms Request to Database");
-		ChatroomResultSet roomresultset = ChatServerManager.rgcriNearbyRooms(latitude, longitude, radius);
+		ChatRoomResultSet crrs = ChatServerManager.rgcriNearbyRooms(latitude, longitude, radiusMeters);
 		logger.log(Level.INFO, "Request completed");
 		
 		// Extract ChatResultSet Params
-		ChatCode chatcodeGetPost = roomresultset.getChatCode();
-		List<ChatRoomInfo> rgcri = roomresultset.getRooms();
+		ChatCode chatcodeGetPost = crrs.getChatCode();
+		List<ChatRoomInfo> rgcri = crrs.getRooms();
 		
 		JSONObject jsonResponse = new JSONObject();
 		try {

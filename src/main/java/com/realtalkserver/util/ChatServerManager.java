@@ -297,10 +297,10 @@ public class ChatServerManager {
 	 * 
 	 * @param latitude    latitude of the origin point
 	 * @param longitude   longitude of the origin point
-	 * @param radius      radius to search within
+	 * @param radiusMeters      radius to search within
 	 * @return            A ChatroomResultSet containing rooms and success/error messages 
 	 */
-	public static ChatroomResultSet rgcriNearbyRooms(double latitude, double longitude, double radius) {
+	public static ChatRoomResultSet crrsNearbyRooms(double latitude, double longitude, double radiusMeters) {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
@@ -312,10 +312,11 @@ public class ChatServerManager {
 			// Rooms retrieved
 			List<ChatRoomInfo> rooms = new ArrayList<ChatRoomInfo>();
 			while (resultset.next()) {
+				//TODO: sort by distance
 				// Check to see if the room is within the given radius 
 				double roomLatitude = resultset.getDouble("latitude");
 				double roomLongitude = resultset.getDouble("longitude");
-				if (doubleDistance(latitude, longitude, roomLatitude, roomLongitude) < radius) {
+				if (distance(latitude, longitude, roomLatitude, roomLongitude) < radiusMeters) {
 					// Add the room with all info about it
 					String sName = resultset.getString("room_name");
 					String sId = resultset.getString("room_id");
@@ -331,37 +332,42 @@ public class ChatServerManager {
 			resultset.close();
 			DatabaseUtility.closeConnection(connection);
 			// TODO: return value
-			return null;
+			return new ChatRoomResultSet(rooms, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
 			e.printStackTrace();
-			return null;
+			return new ChatRoomResultSet(null, ChatCode.FAILURE);
 		} catch (SQLException e) {
 			// SQL query failed: Messages not retrieved
 			e.printStackTrace();
-			return null;
+			return new ChatRoomResultSet(null, ChatCode.FAILURE);
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
 			e.printStackTrace();
-			return null;
+			return new ChatRoomResultSet(null, ChatCode.FAILURE);
 		}
 	}
 
-	private static double doubleDistance(double lat1, double lon1, double lat2, double lon2) {
-		double theta = lon1 - lon2;
-		double distance = 
-				Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + 
-				Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+	private static double distance(double lat1, double lon1, double lat2, double lon2) {
+		double earthRadius = 6371000; // meters
+		double dLat = deg2rad(lat2-lat1);
+		double dLon = deg2rad(lon2-lon1);
+		lat1 = deg2rad(lat1);
+		lat2 = deg2rad(lat2);
+
+		double a = 
+				Math.sin(dLat/2) * Math.sin(dLat/2) +
+				Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
 		
-		distance = Math.acos(distance);
-		distance = rad2deg(distance);
-		distance = distance * 60 * 1.1515;
-		return distance;
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+		double distance = earthRadius * c;
+		return distance * 1000;
 	}
 
 	private static double deg2rad(double deg) {
 		return (deg * Math.PI / 180.0);
 	}
+	
 	private static double rad2deg(double rad) {
 		return (rad * 180.0 / Math.PI);
 	}
