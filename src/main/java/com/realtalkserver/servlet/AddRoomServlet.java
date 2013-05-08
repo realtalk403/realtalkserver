@@ -8,15 +8,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 
-import com.realtalkserver.util.ChatServerManager;
 import com.realtalkserver.util.ChatRoomInfo;
+import com.realtalkserver.util.ChatServerManager;
 import com.realtalkserver.util.RequestParameters;
 import com.realtalkserver.util.ResponseParameters;
 import com.realtalkserver.util.UserInfo;
-import com.realtalkserver.util.UserManager;
 /**
  * AddRoomServlet is a servlet used for adding a chat room.
  * 
