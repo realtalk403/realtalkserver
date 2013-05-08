@@ -69,4 +69,8 @@ public class SQLQueries {
 			"WHERE room_id = ? " +
 			"ORDER BY time_sent DESC;";
 
+	public static final String QUERY_GET_ALL_ROOMS = 
+			"SELECT *" +
+			"FROM rooms;";
+	
 }
