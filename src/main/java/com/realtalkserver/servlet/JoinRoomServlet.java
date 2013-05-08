@@ -6,7 +6,6 @@ package com.realtalkserver.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,8 +15,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.realtalkserver.util.ChatCode;
-import com.realtalkserver.util.ChatServerManager;
 import com.realtalkserver.util.ChatRoomInfo;
+import com.realtalkserver.util.ChatServerManager;
 import com.realtalkserver.util.RequestParameters;
 import com.realtalkserver.util.ResponseParameters;
 import com.realtalkserver.util.UserInfo;
