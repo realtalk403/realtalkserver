@@ -265,27 +265,18 @@ public class ChatServerManager {
 			// Execute the SELECT query
 			ResultSet resultset = preparedstatement.executeQuery();
 
-			// Check for correct result
-			if (resultset.next()) {
-				// Messages retrieved: put all messages into a list
-				List<MessageInfo> messages = new ArrayList<MessageInfo>();
-				resultset.beforeFirst();
-				while (resultset.next()) {
-					String stUsername = resultset.getString("user_name");
-					Timestamp timestampSent = resultset.getTimestamp("time_sent");
-					String stContent = resultset.getString("content");
-					messages.add(new MessageInfo(stContent, stUsername, timestampSent));
-				}
-
-				resultset.close();
-				DatabaseUtility.closeConnection(connection);
-				return new ChatResultSet(messages, ChatCode.SUCCESS);
-			} else {
-				// Messages not retrieved
-				resultset.close();
-				DatabaseUtility.closeConnection(connection);
-				return new ChatResultSet(ChatCode.FAILURE);
+			// Messages retrieved: put all messages into a list
+			List<MessageInfo> messages = new ArrayList<MessageInfo>();
+			while (resultset.next()) {
+				String stUsername = resultset.getString("user_name");
+				Timestamp timestampSent = resultset.getTimestamp("time_sent");
+				String stContent = resultset.getString("content");
+				messages.add(new MessageInfo(stContent, stUsername, timestampSent));
 			}
+
+			resultset.close();
+			DatabaseUtility.closeConnection(connection);
+			return new ChatResultSet(messages, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
 			e.printStackTrace();
@@ -299,5 +290,79 @@ public class ChatServerManager {
 			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		}
+	}
+
+	/**
+	 * Retrieves all room within the given radius of the given coordinates.
+	 * 
+	 * @param latitude    latitude of the origin point
+	 * @param longitude   longitude of the origin point
+	 * @param radius      radius to search within
+	 * @return            A ChatroomResultSet containing rooms and success/error messages 
+	 */
+	public static ChatroomResultSet rgcriNearbyRooms(double latitude, double longitude, double radius) {
+		try {
+			// Connect to the database and prepare the query
+			Connection connection = DatabaseUtility.connectionGetConnection();
+			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ALL_ROOMS);
+
+			// Execute the SELECT query
+			ResultSet resultset = preparedstatement.executeQuery();
+
+			// Rooms retrieved
+			List<ChatRoomInfo> rooms = new ArrayList<ChatRoomInfo>();
+			while (resultset.next()) {
+				// Check to see if the room is within the given radius 
+				double roomLatitude = resultset.getDouble("latitude");
+				double roomLongitude = resultset.getDouble("longitude");
+				if (doubleDistance(latitude, longitude, roomLatitude, roomLongitude) < radius) {
+					// Add the room with all info about it
+					String sName = resultset.getString("room_name");
+					String sId = resultset.getString("room_id");
+					String sDesc = resultset.getString("room_desc");
+					String sCreator = resultset.getString("creator_name");
+					Timestamp timestampCreated = resultset.getTimestamp("time_created");
+					//TODO: num users
+					int numUsers = 0;
+					rooms.add(new ChatRoomInfo(sName, sId, sDesc, roomLatitude, roomLongitude, sCreator, numUsers, timestampCreated));
+				}
+			}
+			
+			resultset.close();
+			DatabaseUtility.closeConnection(connection);
+			// TODO: return value
+			return null;
+		} catch (URISyntaxException e) {
+			// Database connection failed: Messages not retrieved
+			e.printStackTrace();
+			return null;
+		} catch (SQLException e) {
+			// SQL query failed: Messages not retrieved
+			e.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private static double doubleDistance(double lat1, double lon1, double lat2, double lon2) {
+		double theta = lon1 - lon2;
+		double distance = 
+				Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + 
+				Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+		
+		distance = Math.acos(distance);
+		distance = rad2deg(distance);
+		distance = distance * 60 * 1.1515;
+		return distance;
+	}
+
+	private static double deg2rad(double deg) {
+		return (deg * Math.PI / 180.0);
+	}
+	private static double rad2deg(double rad) {
+		return (rad * 180.0 / Math.PI);
 	}
 }
