@@ -221,17 +221,17 @@ public class ChatServerManager {
 			ResultSet resultset = preparedstatement.executeQuery();
 			
 			// Messages retrieved: put all messages into a list
-			List<MessageInfo> messages = new ArrayList<MessageInfo>();
+			List<MessageInfo> rgmessageinfo = new ArrayList<MessageInfo>();
 			while (resultset.next()) {
 				String stUsername = resultset.getString("user_name");
 				Timestamp timestampSent = resultset.getTimestamp("time_sent");
 				String stContent = resultset.getString("content");
-				messages.add(new MessageInfo(stContent, stUsername, timestampSent));
+				rgmessageinfo.add(new MessageInfo(stContent, stUsername, timestampSent));
 			}
 
 			resultset.close();
 			DatabaseUtility.closeConnection(connection);
-			return new ChatResultSet(messages, ChatCode.SUCCESS);
+			return new ChatResultSet(rgmessageinfo, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
 			e.printStackTrace();
@@ -266,17 +266,17 @@ public class ChatServerManager {
 			ResultSet resultset = preparedstatement.executeQuery();
 
 			// Messages retrieved: put all messages into a list
-			List<MessageInfo> messages = new ArrayList<MessageInfo>();
+			List<MessageInfo> rgmessageinfo = new ArrayList<MessageInfo>();
 			while (resultset.next()) {
 				String stUsername = resultset.getString("user_name");
 				Timestamp timestampSent = resultset.getTimestamp("time_sent");
 				String stContent = resultset.getString("content");
-				messages.add(new MessageInfo(stContent, stUsername, timestampSent));
+				rgmessageinfo.add(new MessageInfo(stContent, stUsername, timestampSent));
 			}
 
 			resultset.close();
 			DatabaseUtility.closeConnection(connection);
-			return new ChatResultSet(messages, ChatCode.SUCCESS);
+			return new ChatResultSet(rgmessageinfo, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
 			e.printStackTrace();
@@ -297,10 +297,10 @@ public class ChatServerManager {
 	 * 
 	 * @param latitude    latitude of the origin point
 	 * @param longitude   longitude of the origin point
-	 * @param radius      radius to search within
+	 * @param radiusMeters      radius to search within
 	 * @return            A ChatroomResultSet containing rooms and success/error messages 
 	 */
-	public static ChatroomResultSet rgcriNearbyRooms(double latitude, double longitude, double radius) {
+	public static ChatroomResultSet crrsNearbyRooms(double latitude, double longitude, double radiusMeters) {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
@@ -310,28 +310,102 @@ public class ChatServerManager {
 			ResultSet resultset = preparedstatement.executeQuery();
 
 			// Rooms retrieved
-			List<ChatRoomInfo> rooms = new ArrayList<ChatRoomInfo>();
+			List<ChatRoomInfo> rgcri = new ArrayList<ChatRoomInfo>();
 			while (resultset.next()) {
+				//TODO: sort by distance
 				// Check to see if the room is within the given radius 
 				double roomLatitude = resultset.getDouble("latitude");
 				double roomLongitude = resultset.getDouble("longitude");
-				if (doubleDistance(latitude, longitude, roomLatitude, roomLongitude) < radius) {
+				//TODO: fix this test
+				if (distance(latitude, longitude, roomLatitude, roomLongitude) < radiusMeters || true) {
 					// Add the room with all info about it
-					String sName = resultset.getString("room_name");
-					String sId = resultset.getString("room_id");
-					String sDesc = resultset.getString("room_desc");
-					String sCreator = resultset.getString("creator_name");
+					String stName = resultset.getString("room_name");
+					String stId = resultset.getString("room_id");
+					String stDesc = resultset.getString("room_desc");
+					String stCreator = resultset.getString("creator_name");
 					Timestamp timestampCreated = resultset.getTimestamp("time_created");
-					//TODO: num users
-					int numUsers = 0;
-					rooms.add(new ChatRoomInfo(sName, sId, sDesc, roomLatitude, roomLongitude, sCreator, numUsers, timestampCreated));
+					int numUsers = iNumUsers(new ChatRoomInfo(stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, 0, timestampCreated));
+					rgcri.add(new ChatRoomInfo(stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, numUsers, timestampCreated));
 				}
 			}
 			
 			resultset.close();
 			DatabaseUtility.closeConnection(connection);
-			// TODO: return value
-			return null;
+			return new ChatroomResultSet(rgcri, ChatCode.SUCCESS);
+		} catch (URISyntaxException e) {
+			// Database connection failed: Messages not retrieved
+			e.printStackTrace();
+			return new ChatroomResultSet(null, ChatCode.FAILURE);
+		} catch (SQLException e) {
+			// SQL query failed: Messages not retrieved
+			e.printStackTrace();
+			return new ChatroomResultSet(null, ChatCode.FAILURE);
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
+			e.printStackTrace();
+			return new ChatroomResultSet(null, ChatCode.FAILURE);
+		}
+	}
+	
+	/**
+	 * Retrieves a list of all registration IDs associated with active users
+	 * in the given chat room.
+	 * 
+	 * @param cri      The chat room
+	 * @return         Registration IDs of all users in a given room
+	 */
+	public static List<String> rgstGetRegistrationIds(ChatRoomInfo cri) {
+		List<UserInfo> rgUser = rguserinfoGetRoomUsers(cri);
+		List<String> rgRegIds = new ArrayList<String>();
+		for (UserInfo userinfo : rgUser) {
+			rgRegIds.add(userinfo.getRegistrationId());
+		}
+		return rgRegIds;
+	}
+
+	/**
+	 * Returns the number of active users in a given chat room.
+	 * 
+	 * @param cri      The chat room
+	 * @return         Number of users in that room, or -1 if an error occured
+	 */
+	public static int iNumUsers(ChatRoomInfo cri) {
+		List<UserInfo> rgUser = rguserinfoGetRoomUsers(cri);
+		if (rgUser == null) {
+			return -1;
+		}
+			
+		return rgUser.size();
+	}
+
+	/**
+	 * Retrieves a list of all active users in the given room.
+	 * 
+	 * @param cri      The chat room
+	 * @return         Users in that room, or null if an error occurred
+	 */
+	public static List<UserInfo> rguserinfoGetRoomUsers(ChatRoomInfo cri) {
+		try {
+			// Connect to the database and prepare the query
+			Connection connection = DatabaseUtility.connectionGetConnection();
+			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ROOM_USERS);
+			preparedstatement.setString(1, cri.getId());
+			
+			// Execute the SELECT query
+			ResultSet resultset = preparedstatement.executeQuery();
+			
+			// Users retrieved: put all users into a list
+			List<UserInfo> rguserinfo = new ArrayList<UserInfo>();
+			while (resultset.next()) {
+				String stUsername = resultset.getString("u_user_name");
+				String stPassword = resultset.getString("u_password");
+				String stRegId = resultset.getString("u_device_id");
+				rguserinfo.add(new UserInfo(stUsername, stPassword, stRegId));
+			}
+
+			resultset.close();
+			DatabaseUtility.closeConnection(connection);
+			return rguserinfo;
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
 			e.printStackTrace();
@@ -347,21 +421,27 @@ public class ChatServerManager {
 		}
 	}
 
-	private static double doubleDistance(double lat1, double lon1, double lat2, double lon2) {
-		double theta = lon1 - lon2;
-		double distance = 
-				Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + 
-				Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+	//TODO: fix distance
+	private static double distance(double lat1, double lon1, double lat2, double lon2) {
+		double earthRadius = 6371000; // meters
+		double dLat = deg2rad(lat2-lat1);
+		double dLon = deg2rad(lon2-lon1);
+		lat1 = deg2rad(lat1);
+		lat2 = deg2rad(lat2);
+
+		double a = 
+				Math.sin(dLat/2) * Math.sin(dLat/2) +
+				Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
 		
-		distance = Math.acos(distance);
-		distance = rad2deg(distance);
-		distance = distance * 60 * 1.1515;
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+		double distance = earthRadius * c;
 		return distance;
 	}
 
 	private static double deg2rad(double deg) {
 		return (deg * Math.PI / 180.0);
 	}
+	
 	private static double rad2deg(double rad) {
 		return (rad * 180.0 / Math.PI);
 	}
