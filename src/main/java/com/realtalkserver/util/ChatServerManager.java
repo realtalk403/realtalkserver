@@ -221,17 +221,17 @@ public class ChatServerManager {
 			ResultSet resultset = preparedstatement.executeQuery();
 			
 			// Messages retrieved: put all messages into a list
-			List<MessageInfo> messages = new ArrayList<MessageInfo>();
+			List<MessageInfo> rgmessageinfo = new ArrayList<MessageInfo>();
 			while (resultset.next()) {
 				String stUsername = resultset.getString("user_name");
 				Timestamp timestampSent = resultset.getTimestamp("time_sent");
 				String stContent = resultset.getString("content");
-				messages.add(new MessageInfo(stContent, stUsername, timestampSent));
+				rgmessageinfo.add(new MessageInfo(stContent, stUsername, timestampSent));
 			}
 
 			resultset.close();
 			DatabaseUtility.closeConnection(connection);
-			return new ChatResultSet(messages, ChatCode.SUCCESS);
+			return new ChatResultSet(rgmessageinfo, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
 			e.printStackTrace();
@@ -266,17 +266,17 @@ public class ChatServerManager {
 			ResultSet resultset = preparedstatement.executeQuery();
 
 			// Messages retrieved: put all messages into a list
-			List<MessageInfo> messages = new ArrayList<MessageInfo>();
+			List<MessageInfo> rgmessageinfo = new ArrayList<MessageInfo>();
 			while (resultset.next()) {
 				String stUsername = resultset.getString("user_name");
 				Timestamp timestampSent = resultset.getTimestamp("time_sent");
 				String stContent = resultset.getString("content");
-				messages.add(new MessageInfo(stContent, stUsername, timestampSent));
+				rgmessageinfo.add(new MessageInfo(stContent, stUsername, timestampSent));
 			}
 
 			resultset.close();
 			DatabaseUtility.closeConnection(connection);
-			return new ChatResultSet(messages, ChatCode.SUCCESS);
+			return new ChatResultSet(rgmessageinfo, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
 			e.printStackTrace();
@@ -310,7 +310,7 @@ public class ChatServerManager {
 			ResultSet resultset = preparedstatement.executeQuery();
 
 			// Rooms retrieved
-			List<ChatRoomInfo> rooms = new ArrayList<ChatRoomInfo>();
+			List<ChatRoomInfo> rgcri = new ArrayList<ChatRoomInfo>();
 			while (resultset.next()) {
 				//TODO: sort by distance
 				// Check to see if the room is within the given radius 
@@ -319,21 +319,20 @@ public class ChatServerManager {
 				//TODO: fix this test
 				if (distance(latitude, longitude, roomLatitude, roomLongitude) < radiusMeters || true) {
 					// Add the room with all info about it
-					String sName = resultset.getString("room_name");
-					String sId = resultset.getString("room_id");
-					String sDesc = resultset.getString("room_desc");
-					String sCreator = resultset.getString("creator_name");
+					//TODO: st, not s prefix
+					String stName = resultset.getString("room_name");
+					String stId = resultset.getString("room_id");
+					String stDesc = resultset.getString("room_desc");
+					String stCreator = resultset.getString("creator_name");
 					Timestamp timestampCreated = resultset.getTimestamp("time_created");
-					//TODO: num users
-					int numUsers = 0;
-					rooms.add(new ChatRoomInfo(sName, sId, sDesc, roomLatitude, roomLongitude, sCreator, numUsers, timestampCreated));
+					int numUsers = iNumUsers(stId);
+					rgcri.add(new ChatRoomInfo(stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, numUsers, timestampCreated));
 				}
 			}
 			
 			resultset.close();
 			DatabaseUtility.closeConnection(connection);
-			// TODO: return value
-			return new ChatroomResultSet(rooms, ChatCode.SUCCESS);
+			return new ChatroomResultSet(rgcri, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
 			e.printStackTrace();
@@ -349,6 +348,36 @@ public class ChatServerManager {
 		}
 	}
 
+	private static int iNumUsers(String stId) {
+		try {
+			// Connect to the database and prepare the query
+			Connection connection = DatabaseUtility.connectionGetConnection();
+			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ALL_USERS);
+			preparedstatement.setString(1, stId);
+			
+			// Execute the SELECT query
+			ResultSet resultset = preparedstatement.executeQuery();
+
+			resultset.close();
+			DatabaseUtility.closeConnection(connection);
+			resultset.last();
+			return resultset.getRow();
+		} catch (URISyntaxException e) {
+			// Database connection failed: Messages not retrieved
+			e.printStackTrace();
+			return -1;
+		} catch (SQLException e) {
+			// SQL query failed: Messages not retrieved
+			e.printStackTrace();
+			return -1;
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
+			e.printStackTrace();
+			return -1;
+		}
+	}
+
+	//TODO: fix distance
 	private static double distance(double lat1, double lon1, double lat2, double lon2) {
 		double earthRadius = 6371000; // meters
 		double dLat = deg2rad(lat2-lat1);
