@@ -367,10 +367,14 @@ public class ChatServerManager {
 	 * Returns the number of active users in a given chat room.
 	 * 
 	 * @param cri      The chat room
-	 * @return         Number of users in that room
+	 * @return         Number of users in that room, or -1 if an error occured
 	 */
 	public static int iNumUsers(ChatRoomInfo cri) {
 		List<UserInfo> rgUser = rguserinfoGetRoomUsers(cri);
+		if (rgUser == null) {
+			return -1;
+		}
+			
 		return rgUser.size();
 	}
 
@@ -398,9 +402,9 @@ public class ChatServerManager {
 				String stRegId = resultset.getString("u_device_id");
 				rguserinfo.add(new UserInfo(stUsername, stPassword, stRegId));
 			}
-			
-			DatabaseUtility.closeConnection(connection);
+
 			resultset.close();
+			DatabaseUtility.closeConnection(connection);
 			return rguserinfo;
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
