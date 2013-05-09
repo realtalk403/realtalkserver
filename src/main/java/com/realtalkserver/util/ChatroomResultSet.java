@@ -10,7 +10,7 @@ import java.util.List;
  * This class is used as a container containing a payload and a ChatCode. It is used mainly for
  * returning results from ChatManager in a compact format.
  * 
- * @author Colin Kho
+ * @author Jory Rice
  *
  */
 public class ChatroomResultSet {
