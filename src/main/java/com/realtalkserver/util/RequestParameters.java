@@ -29,6 +29,12 @@ public class RequestParameters {
     public static final String PARAMETER_ROOM_ID = "PARAMETER_ROOM_ID";
     // Room Description
     public static final String PARAMETER_ROOM_DESCRIPTION = "PARAMETER_ROOM_DESCRIPTION";
+    // Room Latitude
+    public static final String PARAMETER_ROOM_LATITUDE = "PARAMETER_ROOM_LATITUDE";
+    // Room Longitude
+    public static final String PARAMETER_ROOM_LONGITUDE = "PARAMETER_ROOM_LONGITUDE";
+    // Room list
+    public static final String PARAMETER_ROOM_ROOMS = "PARAMETER_ROOM_ROOMS";
     // Message Body
     public static final String PARAMETER_MESSAGE_BODY = "PARAMETER_MESSAGE_BODY";
     // Message Sender
@@ -39,4 +45,15 @@ public class RequestParameters {
     public static final String PARAMETER_MESSAGE_TIMESTAMP = "PARAMETER_MESSAGE_TIMESTAMP";
     // Generic TimeStamp Parameter
     public static final String PARAMETER_TIMESTAMP = "PARAMETER_TIMESTAMP";
+    //latitude param
+    public static final String PARAMETER_USER_LONGITUDE = "PARAMETER_USER_LONGITUDE";
+    //longitude param
+    public static final String PARAMETER_USER_LATITUDE = "PARAMETER_USER_LATITUDE";
+    //radius param
+    public static final String PARAMETER_USER_RADIUS = "PARAMETER_USER_RADIUS";
+    //room creator
+    public static final String PARAMETER_ROOM_CREATOR = "PARAMETER_ROOM_CREATOR";
+    //num users in room
+    public static final String PARAMETER_ROOM_NUM_USERS = "PARAMETER_ROOM_NUM_USERS";
+    
 }

@@ -13,16 +13,7 @@
       <listener-class>com.realtalkserver.util.APIKeyInitializer</listener-class>
       <load-on-startup>1</load-on-startup>
   </listener>
-    
-  <servlet>
-      <servlet-name>hello</servlet-name>
-      <servlet-class>com.realtalkserver.servlet.HelloServlet</servlet-class>
-  </servlet>
 
-  <servlet-mapping>
-      <servlet-name>hello</servlet-name>
-      <url-pattern>/hello</url-pattern>
-  </servlet-mapping>
   <servlet>
       <servlet-name>registerId</servlet-name>
       <servlet-class>com.realtalkserver.servlet.RegisterServlet</servlet-class>
@@ -103,5 +94,21 @@
   <servlet-mapping>
       <servlet-name>getRecentChat</servlet-name>
       <url-pattern>/pullRecentChat</url-pattern>
+  </servlet-mapping>
+  <servlet>
+      <servlet-name>getChatLog</servlet-name>
+      <servlet-class>com.realtalkserver.servlet.GetChatLogServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>getChatLog</servlet-name>
+      <url-pattern>/pullChat</url-pattern>
+  </servlet-mapping>
+  <servlet>
+      <servlet-name>nearbyRooms</servlet-name>
+      <servlet-class>com.realtalkserver.servlet.NearbyRoomsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>nearbyRooms</servlet-name>
+      <url-pattern>/nearbyRooms</url-pattern>
   </servlet-mapping>
 </web-app>
