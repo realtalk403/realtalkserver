@@ -74,7 +74,7 @@ public class SQLQueries {
 			"FROM rooms;";
 
 	public static final String QUERY_GET_ROOM_USERS = 
-			"SELECT " +
+			"SELECT DISTINCT" +
 			"u.user_name AS u_user_name, " +
 			"u.device_id AS u_device_id, " +
 			"u.password AS u_password" +

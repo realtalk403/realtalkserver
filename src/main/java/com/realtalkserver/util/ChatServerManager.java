@@ -382,7 +382,7 @@ public class ChatServerManager {
 	 * Retrieves a list of all active users in the given room.
 	 * 
 	 * @param cri      The chat room
-	 * @return         Users in that room
+	 * @return         Users in that room, or null if an error occurred
 	 */
 	public static List<UserInfo> rguserinfoGetRoomUsers(ChatRoomInfo cri) {
 		try {
@@ -397,10 +397,10 @@ public class ChatServerManager {
 			// Users retrieved: put all users into a list
 			List<UserInfo> rguserinfo = new ArrayList<UserInfo>();
 			while (resultset.next()) {
-//				String stUsername = resultset.getString("u_user_name");
-//				String stPassword = resultset.getString("u_password");
-//				String stRegId = resultset.getString("u_device_id");
-//				rguserinfo.add(new UserInfo(stUsername, stPassword, stRegId));
+				String stUsername = resultset.getString("u_user_name");
+				String stPassword = resultset.getString("u_password");
+				String stRegId = resultset.getString("u_device_id");
+				rguserinfo.add(new UserInfo(stUsername, stPassword, stRegId));
 			}
 
 			resultset.close();
