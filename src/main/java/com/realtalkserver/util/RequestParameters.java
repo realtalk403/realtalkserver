@@ -46,11 +46,11 @@ public class RequestParameters {
     // Generic TimeStamp Parameter
     public static final String PARAMETER_TIMESTAMP = "PARAMETER_TIMESTAMP";
     //latitude param
-    public static final String PARAMETER_USER_LONGITUDE = "PARAMETER_TIMESTAMP";
+    public static final String PARAMETER_USER_LONGITUDE = "PARAMETER_USER_LONGITUDE";
     //longitude param
-    public static final String PARAMETER_USER_LATITUDE = "PARAMETER_TIMESTAMP";
+    public static final String PARAMETER_USER_LATITUDE = "PARAMETER_USER_LATITUDE";
     //radius param
-    public static final String PARAMETER_USER_RADIUS = "PARAMETER_TIMESTAMP";
+    public static final String PARAMETER_USER_RADIUS = "PARAMETER_USER_RADIUS";
     //room creator
     public static final String PARAMETER_ROOM_CREATOR = "PARAMETER_ROOM_CREATOR";
     //num users in room
