@@ -74,7 +74,10 @@ public class SQLQueries {
 			"FROM rooms;";
 
 	public static final String QUERY_GET_ROOM_USERS = 
-			"SELECT u.user_name, u.device_id, u.password" +
+			"SELECT " +
+			"u.user_name AS u_user_name, " +
+			"u.device_id AS u_device_id, " +
+			"u.password AS u_password" +
 			"FROM active_users a, users u" +
 			"WHERE a.room_id = ?" +
 			"AND a.user_name = u.user_name;";

@@ -393,9 +393,9 @@ public class ChatServerManager {
 			// Users retrieved: put all users into a list
 			List<UserInfo> rguserinfo = new ArrayList<UserInfo>();
 			while (resultset.next()) {
-				String stUsername = resultset.getString("u.user_name");
-				String stPassword = resultset.getString("u.password");
-				String stRegId = resultset.getString("u.device_id");
+				String stUsername = resultset.getString("u_user_name");
+				String stPassword = resultset.getString("u_password");
+				String stRegId = resultset.getString("u_device_id");
 				rguserinfo.add(new UserInfo(stUsername, stPassword, stRegId));
 			}
 			
