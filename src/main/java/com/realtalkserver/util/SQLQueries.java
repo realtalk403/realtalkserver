@@ -73,9 +73,10 @@ public class SQLQueries {
 			"SELECT *" +
 			"FROM rooms;";
 
-	public static final String QUERY_GET_ALL_USERS = 
-			"SELECT *" +
-			"FROM active_users" +
-			"WHERE room_id = ?;";
+	public static final String QUERY_GET_ROOM_USERS = 
+			"SELECT u.user_name, u.device_id, u.password" +
+			"FROM active_users a, users u" +
+			"WHERE a.room_id = ?" +
+			"AND a.user_name = u.user_name;";
 	
 }

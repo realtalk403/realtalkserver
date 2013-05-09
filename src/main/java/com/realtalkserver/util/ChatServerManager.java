@@ -319,13 +319,12 @@ public class ChatServerManager {
 				//TODO: fix this test
 				if (distance(latitude, longitude, roomLatitude, roomLongitude) < radiusMeters || true) {
 					// Add the room with all info about it
-					//TODO: st, not s prefix
 					String stName = resultset.getString("room_name");
 					String stId = resultset.getString("room_id");
 					String stDesc = resultset.getString("room_desc");
 					String stCreator = resultset.getString("creator_name");
 					Timestamp timestampCreated = resultset.getTimestamp("time_created");
-					int numUsers = iNumUsers(stId);
+					int numUsers = iNumUsers(new ChatRoomInfo(stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, 0, timestampCreated));
 					rgcri.add(new ChatRoomInfo(stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, numUsers, timestampCreated));
 				}
 			}
@@ -347,33 +346,74 @@ public class ChatServerManager {
 			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		}
 	}
+	
+	/**
+	 * Retrieves a list of all registration IDs associated with active users
+	 * in the given chat room.
+	 * 
+	 * @param cri      The chat room
+	 * @return         Registration IDs of all users in a given room
+	 */
+	public static List<String> rgstGetRegistrationIds(ChatRoomInfo cri) {
+		List<UserInfo> rgUser = rguserinfoGetRoomUsers(cri);
+		List<String> rgRegIds = new ArrayList<String>();
+		for (UserInfo userinfo : rgUser) {
+			rgRegIds.add(userinfo.getRegistrationId());
+		}
+		return rgRegIds;
+	}
 
-	private static int iNumUsers(String stId) {
+	/**
+	 * Returns the number of active users in a given chat room.
+	 * 
+	 * @param cri      The chat room
+	 * @return         Number of users in that room
+	 */
+	public static int iNumUsers(ChatRoomInfo cri) {
+		List<UserInfo> rgUser = rguserinfoGetRoomUsers(cri);
+		return rgUser.size();
+	}
+
+	/**
+	 * Retrieves a list of all active users in the given room.
+	 * 
+	 * @param cri      The chat room
+	 * @return         Users in that room
+	 */
+	public static List<UserInfo> rguserinfoGetRoomUsers(ChatRoomInfo cri) {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ALL_USERS);
-			preparedstatement.setString(1, stId);
+			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ROOM_USERS);
+			preparedstatement.setString(1, cri.getId());
 			
 			// Execute the SELECT query
 			ResultSet resultset = preparedstatement.executeQuery();
-
-			resultset.close();
+			
+			// Users retrieved: put all users into a list
+			List<UserInfo> rguserinfo = new ArrayList<UserInfo>();
+			while (resultset.next()) {
+				String stUsername = resultset.getString("u.user_name");
+				String stPassword = resultset.getString("u.password");
+				String stRegId = resultset.getString("u.device_id");
+				rguserinfo.add(new UserInfo(stUsername, stPassword, stRegId));
+			}
+			
 			DatabaseUtility.closeConnection(connection);
-			resultset.last();
-			return resultset.getRow();
+			resultset.close();
+			return rguserinfo;
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
 			e.printStackTrace();
-			return -1;
+			return null;
 		} catch (SQLException e) {
 			// SQL query failed: Messages not retrieved
 			e.printStackTrace();
-			return -1;
+			return null;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
 			e.printStackTrace();
-			return -1;
+			return null;
 		}
 	}
 
@@ -391,7 +431,7 @@ public class ChatServerManager {
 		
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
 		double distance = earthRadius * c;
-		return distance * 1000;
+		return distance;
 	}
 
 	private static double deg2rad(double deg) {
