@@ -13,7 +13,6 @@ import com.realtalkserver.util.ChatServerManager;
 import com.realtalkserver.util.ChatRoomInfo;
 import com.realtalkserver.util.RequestParameters;
 import com.realtalkserver.util.UserInfo;
-import com.realtalkserver.util.UserManager;
 /**
  * AddRoomServlet is a servlet used for adding a chat room.
  * 
