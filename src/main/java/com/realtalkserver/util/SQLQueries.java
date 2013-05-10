@@ -79,7 +79,7 @@ public class SQLQueries {
 			"u.device_id AS u_device_id, " +
 			"u.password AS u_password" +
 			"FROM active_users a, users u" +
-			"WHERE a.room_id = ?" +
+			"WHERE a.room_id = ? " +
 			"AND a.user_name = u.user_name;";
 	
 }
