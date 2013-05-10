@@ -312,22 +312,23 @@ public class ChatServerManager {
 			// Rooms retrieved
 			List<ChatRoomInfo> rgcri = new ArrayList<ChatRoomInfo>();
 			while (resultset.next()) {
-				//TODO: sort by distance
 				// Check to see if the room is within the given radius 
 				double roomLatitude = resultset.getDouble("latitude");
 				double roomLongitude = resultset.getDouble("longitude");
-				//TODO: fix this test
-				if (distance(latitude, longitude, roomLatitude, roomLongitude) < radiusMeters || true) {
+				if (LocationLogic.distance(latitude, longitude, roomLatitude, roomLongitude) < radiusMeters) {
 					// Add the room with all info about it
 					String stName = resultset.getString("room_name");
 					String stId = resultset.getString("room_id");
 					String stDesc = resultset.getString("room_desc");
 					String stCreator = resultset.getString("creator_name");
 					Timestamp timestampCreated = resultset.getTimestamp("time_created");
-					int numUsers = iNumUsers(new ChatRoomInfo(stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, 0, timestampCreated));
+					int numUsers = iNumUsers(connection, new ChatRoomInfo(stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, 0, timestampCreated));
 					rgcri.add(new ChatRoomInfo(stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, numUsers, timestampCreated));
 				}
 			}
+			
+			// Sort: closest rooms are first
+			rgcri = LocationLogic.rgcriSortByProximity(rgcri, latitude, longitude);
 			
 			resultset.close();
 			DatabaseUtility.closeConnection(connection);
@@ -346,7 +347,7 @@ public class ChatServerManager {
 			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		}
 	}
-	
+
 	/**
 	 * Retrieves a list of all registration IDs associated with active users
 	 * in the given chat room.
@@ -377,6 +378,20 @@ public class ChatServerManager {
 			
 		return rgUser.size();
 	}
+	
+	private static int iNumUsers(Connection connection, ChatRoomInfo cri) {
+		List<UserInfo> rgUser;
+		try {
+			rgUser = rguserinfoGetRoomUsers(connection, cri);
+			if (rgUser == null) {
+				return -1;
+			}
+				
+			return rgUser.size();
+		} catch (SQLException e) {
+			return -1;
+		}
+	}
 
 	/**
 	 * Retrieves a list of all active users in the given room.
@@ -388,24 +403,7 @@ public class ChatServerManager {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ROOM_USERS);
-			preparedstatement.setString(1, cri.getId());
-			
-			// Execute the SELECT query
-			ResultSet resultset = preparedstatement.executeQuery();
-			
-			// Users retrieved: put all users into a list
-			List<UserInfo> rguserinfo = new ArrayList<UserInfo>();
-			while (resultset.next()) {
-				String stUsername = resultset.getString("u_user_name");
-				String stPassword = resultset.getString("u_password");
-				String stRegId = resultset.getString("u_device_id");
-				rguserinfo.add(new UserInfo(stUsername, stPassword, stRegId));
-			}
-
-			resultset.close();
-			DatabaseUtility.closeConnection(connection);
-			return rguserinfo;
+			return rguserinfoGetRoomUsers(connection, cri);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
 			e.printStackTrace();
@@ -421,28 +419,25 @@ public class ChatServerManager {
 		}
 	}
 
-	//TODO: fix distance
-	private static double distance(double lat1, double lon1, double lat2, double lon2) {
-		double earthRadius = 6371000; // meters
-		double dLat = deg2rad(lat2-lat1);
-		double dLon = deg2rad(lon2-lon1);
-		lat1 = deg2rad(lat1);
-		lat2 = deg2rad(lat2);
-
-		double a = 
-				Math.sin(dLat/2) * Math.sin(dLat/2) +
-				Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+	private static List<UserInfo> rguserinfoGetRoomUsers(Connection connection, ChatRoomInfo cri) throws SQLException {
+		// Prepare the query
+		PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ROOM_USERS);
+		preparedstatement.setString(1, cri.getId());
 		
-		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-		double distance = earthRadius * c;
-		return distance;
-	}
+		// Execute the SELECT query
+		ResultSet resultset = preparedstatement.executeQuery();
+		
+		// Users retrieved: put all users into a list
+		List<UserInfo> rguserinfo = new ArrayList<UserInfo>();
+		while (resultset.next()) {
+			String stUsername = resultset.getString("u_user_name");
+			String stPassword = resultset.getString("u_password");
+			String stRegId = resultset.getString("u_device_id");
+			rguserinfo.add(new UserInfo(stUsername, stPassword, stRegId));
+		}
 
-	private static double deg2rad(double deg) {
-		return (deg * Math.PI / 180.0);
-	}
-	
-	private static double rad2deg(double rad) {
-		return (rad * 180.0 / Math.PI);
+		resultset.close();
+		DatabaseUtility.closeConnection(connection);
+		return rguserinfo;
 	}
 }
