@@ -403,7 +403,9 @@ public class ChatServerManager {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
-			return rguserinfoGetRoomUsers(connection, cri);
+			List<UserInfo> rgu = rguserinfoGetRoomUsers(connection, cri);
+			DatabaseUtility.closeConnection(connection);
+			return rgu;
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
 			e.printStackTrace();
@@ -438,7 +440,6 @@ public class ChatServerManager {
 		}
 
 		resultset.close();
-		DatabaseUtility.closeConnection(connection);
 		return rguserinfo;
 	}
 }
