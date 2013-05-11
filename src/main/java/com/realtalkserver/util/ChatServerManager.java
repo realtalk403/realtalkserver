@@ -421,7 +421,8 @@ public class ChatServerManager {
 
 	private static List<UserInfo> rguserinfoGetRoomUsers(Connection connection, ChatRoomInfo cri) throws SQLException {
 		// Prepare the query
-		PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ROOM_USERS);
+		PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ROOM_USERS, 
+				ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		preparedstatement.setString(1, cri.getId());
 		
 		// Execute the SELECT query
@@ -429,12 +430,12 @@ public class ChatServerManager {
 		
 		// Users retrieved: put all users into a list
 		List<UserInfo> rguserinfo = new ArrayList<UserInfo>();
-//		while (resultset.next()) {
-//			String stUsername = resultset.getString("u_user_name");
-//			String stPassword = resultset.getString("u_password");
-//			String stRegId = resultset.getString("u_device_id");
-//			rguserinfo.add(new UserInfo(stUsername, stPassword, stRegId));
-//		}
+		while (resultset.next()) {
+			String stUsername = resultset.getString("u_user_name");
+			String stPassword = resultset.getString("u_password");
+			String stRegId = resultset.getString("u_device_id");
+			rguserinfo.add(new UserInfo(stUsername, stPassword, stRegId));
+		}
 
 		resultset.close();
 		DatabaseUtility.closeConnection(connection);
