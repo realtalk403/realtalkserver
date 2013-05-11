@@ -322,8 +322,10 @@ public class ChatServerManager {
 					String stDesc = resultset.getString("room_desc");
 					String stCreator = resultset.getString("creator_name");
 					Timestamp timestampCreated = resultset.getTimestamp("time_created");
-					int numUsers = iNumUsers(connection, new ChatRoomInfo(stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, 0, timestampCreated));
-					rgcri.add(new ChatRoomInfo(stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, numUsers, timestampCreated));
+					int numUsers = iNumUsers(connection, new ChatRoomInfo(
+							stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, 0, timestampCreated));
+					rgcri.add(new ChatRoomInfo(
+							stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, numUsers, timestampCreated));
 				}
 			}
 			
@@ -356,7 +358,10 @@ public class ChatServerManager {
 	 * @return         Registration IDs of all users in a given room
 	 */
 	public static List<String> rgstGetRegistrationIds(ChatRoomInfo cri) {
+		// Retrieve all active users in the room
 		List<UserInfo> rgUser = rguserinfoGetRoomUsers(cri);
+		
+		// Just return a list of registration IDs
 		List<String> rgRegIds = new ArrayList<String>();
 		for (UserInfo userinfo : rgUser) {
 			rgRegIds.add(userinfo.getRegistrationId());
@@ -371,22 +376,34 @@ public class ChatServerManager {
 	 * @return         Number of users in that room, or -1 if an error occured
 	 */
 	public static int iNumUsers(ChatRoomInfo cri) {
+		// Get all users in the room
 		List<UserInfo> rgUser = rguserinfoGetRoomUsers(cri);
 		if (rgUser == null) {
 			return -1;
 		}
 			
+		// Return count of users in room
 		return rgUser.size();
 	}
 	
+	/**
+	 * Returns the number of active users in a given chat room.
+	 * Uses the given database connection.
+	 * 
+	 * @param connection    DB connection to use
+	 * @param cri           The room
+	 * @return              Number of uses in the room
+	 */
 	private static int iNumUsers(Connection connection, ChatRoomInfo cri) {
 		List<UserInfo> rgUser;
 		try {
+			// Get all users in the room
 			rgUser = rguserinfoGetRoomUsers(connection, cri);
 			if (rgUser == null) {
 				return -1;
 			}
 				
+			// Return count of users in list
 			return rgUser.size();
 		} catch (SQLException e) {
 			return -1;
@@ -421,6 +438,14 @@ public class ChatServerManager {
 		}
 	}
 
+	/**
+	 * Retrieves all user from the given room. Uses the given database connection.
+	 * 
+	 * @param connection      DB connection to use
+	 * @param cri             The room
+	 * @return                Active users in the room
+	 * @throws SQLException
+	 */
 	private static List<UserInfo> rguserinfoGetRoomUsers(Connection connection, ChatRoomInfo cri) throws SQLException {
 		// Prepare the query
 		PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ROOM_USERS, 
@@ -439,6 +464,7 @@ public class ChatServerManager {
 			rguserinfo.add(new UserInfo(stUsername, stPassword, stRegId));
 		}
 
+		preparedstatement.close();
 		resultset.close();
 		return rguserinfo;
 	}

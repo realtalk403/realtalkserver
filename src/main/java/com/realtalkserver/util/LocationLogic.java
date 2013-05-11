@@ -14,7 +14,18 @@ public class LocationLogic {
 	
 	private static final int EARTH_RADIUS_METERS = 6371000;
 	
-	public static List<ChatRoomInfo> rgcriSortByProximity(List<ChatRoomInfo> rgcriRooms, double latitude, double longitude) {
+	/**
+	 * Sorts the given cri list by proximity to the given coordinates.
+	 * Closest rooms are "less than" further rooms, and will therefore
+	 * be earlier in the returned list.
+	 * 
+	 * @param rgcriRooms    The list to sort
+	 * @param latitude      Latitude of the target point
+	 * @param longitude     Longitude of the target point
+	 * @return              A new list with the same rooms, in sorted order
+	 */
+	public static List<ChatRoomInfo> rgcriSortByProximity(
+			List<ChatRoomInfo> rgcriRooms, double latitude, double longitude) {
 		List<ChatRoomProximity> rgcrp = new ArrayList<ChatRoomProximity>();
 		
 		// Add proximity information to chat rooms
@@ -57,6 +68,12 @@ public class LocationLogic {
 		return EARTH_RADIUS_METERS * c;
 	}
 
+	/**
+	 * Converts degrees to radians.
+	 * 
+	 * @param deg    Number in degrees
+	 * @return       Number in radians
+	 */
 	private static double deg2rad(double deg) {
 		return (deg * Math.PI / 180.0);
 	}
@@ -84,6 +101,10 @@ public class LocationLogic {
 			return this.distance;
 		}
 
+		/**
+		 * A room that is closer to its point is "less than"
+		 * a room that is farther from its point.
+		 */
 		public int compareTo(ChatRoomProximity o) {
 			if (this.getDistance() > o.getDistance()) {
 				return 1;
