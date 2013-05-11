@@ -56,15 +56,12 @@ public class ChatServerManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: room was not added.
-			e.printStackTrace();
 			return -2;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: room was not added
-			e.printStackTrace();
 			return -2;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return -2;
 		}
 	}
@@ -98,15 +95,12 @@ public class ChatServerManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: User did not join room
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: User did not join room
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		}
 	}
@@ -140,15 +134,12 @@ public class ChatServerManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: User was not removed from room
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: User was not removed from room
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		}
 	}
@@ -185,15 +176,12 @@ public class ChatServerManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: Message was not posted
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		} catch (SQLException e) {
 			// SQL query failed: Message was not posted
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		}
 	}
@@ -234,15 +222,12 @@ public class ChatServerManager {
 			return new ChatResultSet(rgmessageinfo, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
-			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		} catch (SQLException e) {
 			// SQL  query failed: Messages not retrieved
-			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		}
 	}
@@ -279,15 +264,12 @@ public class ChatServerManager {
 			return new ChatResultSet(rgmessageinfo, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
-			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		} catch (SQLException e) {
 			// SQL query failed: Messages not retrieved
-			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		}
 	}
@@ -337,15 +319,12 @@ public class ChatServerManager {
 			return new ChatroomResultSet(rgcri, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
-			e.printStackTrace();
 			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		} catch (SQLException e) {
 			// SQL query failed: Messages not retrieved
-			e.printStackTrace();
 			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		}
 	}
@@ -425,15 +404,12 @@ public class ChatServerManager {
 			return rgu;
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
-			e.printStackTrace();
 			return null;
 		} catch (SQLException e) {
 			// SQL query failed: Messages not retrieved
-			e.printStackTrace();
 			return null;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return null;
 		}
 	}
