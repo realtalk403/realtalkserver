@@ -56,15 +56,12 @@ public class ChatServerManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: room was not added.
-			e.printStackTrace();
 			return -2;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: room was not added
-			e.printStackTrace();
 			return -2;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return -2;
 		}
 	}
@@ -98,15 +95,12 @@ public class ChatServerManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: User did not join room
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: User did not join room
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		}
 	}
@@ -140,15 +134,12 @@ public class ChatServerManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: User was not removed from room
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: User was not removed from room
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		}
 	}
@@ -185,15 +176,12 @@ public class ChatServerManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: Message was not posted
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		} catch (SQLException e) {
 			// SQL query failed: Message was not posted
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return ChatCode.FAILURE;
 		}
 	}
@@ -234,15 +222,12 @@ public class ChatServerManager {
 			return new ChatResultSet(rgmessageinfo, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
-			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		} catch (SQLException e) {
 			// SQL  query failed: Messages not retrieved
-			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		}
 	}
@@ -279,15 +264,12 @@ public class ChatServerManager {
 			return new ChatResultSet(rgmessageinfo, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
-			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		} catch (SQLException e) {
 			// SQL query failed: Messages not retrieved
-			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return new ChatResultSet(ChatCode.FAILURE);
 		}
 	}
@@ -312,41 +294,41 @@ public class ChatServerManager {
 			// Rooms retrieved
 			List<ChatRoomInfo> rgcri = new ArrayList<ChatRoomInfo>();
 			while (resultset.next()) {
-				//TODO: sort by distance
 				// Check to see if the room is within the given radius 
 				double roomLatitude = resultset.getDouble("latitude");
 				double roomLongitude = resultset.getDouble("longitude");
-				//TODO: fix this test
-				if (distance(latitude, longitude, roomLatitude, roomLongitude) < radiusMeters || true) {
+				if (LocationLogic.distance(latitude, longitude, roomLatitude, roomLongitude) < radiusMeters) {
 					// Add the room with all info about it
 					String stName = resultset.getString("room_name");
 					String stId = resultset.getString("room_id");
 					String stDesc = resultset.getString("room_desc");
 					String stCreator = resultset.getString("creator_name");
 					Timestamp timestampCreated = resultset.getTimestamp("time_created");
-					int numUsers = iNumUsers(new ChatRoomInfo(stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, 0, timestampCreated));
-					rgcri.add(new ChatRoomInfo(stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, numUsers, timestampCreated));
+					int numUsers = iNumUsers(connection, new ChatRoomInfo(
+							stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, 0, timestampCreated));
+					rgcri.add(new ChatRoomInfo(
+							stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, numUsers, timestampCreated));
 				}
 			}
+			
+			// Sort: closest rooms are first
+			rgcri = LocationLogic.rgcriSortByProximity(rgcri, latitude, longitude);
 			
 			resultset.close();
 			DatabaseUtility.closeConnection(connection);
 			return new ChatroomResultSet(rgcri, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
-			e.printStackTrace();
 			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		} catch (SQLException e) {
 			// SQL query failed: Messages not retrieved
-			e.printStackTrace();
 			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		}
 	}
-	
+
 	/**
 	 * Retrieves a list of all registration IDs associated with active users
 	 * in the given chat room.
@@ -355,7 +337,10 @@ public class ChatServerManager {
 	 * @return         Registration IDs of all users in a given room
 	 */
 	public static List<String> rgstGetRegistrationIds(ChatRoomInfo cri) {
+		// Retrieve all active users in the room
 		List<UserInfo> rgUser = rguserinfoGetRoomUsers(cri);
+		
+		// Just return a list of registration IDs
 		List<String> rgRegIds = new ArrayList<String>();
 		for (UserInfo userinfo : rgUser) {
 			rgRegIds.add(userinfo.getRegistrationId());
@@ -370,12 +355,38 @@ public class ChatServerManager {
 	 * @return         Number of users in that room, or -1 if an error occured
 	 */
 	public static int iNumUsers(ChatRoomInfo cri) {
+		// Get all users in the room
 		List<UserInfo> rgUser = rguserinfoGetRoomUsers(cri);
 		if (rgUser == null) {
 			return -1;
 		}
 			
+		// Return count of users in room
 		return rgUser.size();
+	}
+	
+	/**
+	 * Returns the number of active users in a given chat room.
+	 * Uses the given database connection.
+	 * 
+	 * @param connection    DB connection to use
+	 * @param cri           The room
+	 * @return              Number of uses in the room
+	 */
+	private static int iNumUsers(Connection connection, ChatRoomInfo cri) {
+		List<UserInfo> rgUser;
+		try {
+			// Get all users in the room
+			rgUser = rguserinfoGetRoomUsers(connection, cri);
+			if (rgUser == null) {
+				return -1;
+			}
+				
+			// Return count of users in list
+			return rgUser.size();
+		} catch (SQLException e) {
+			return -1;
+		}
 	}
 
 	/**
@@ -388,61 +399,49 @@ public class ChatServerManager {
 		try {
 			// Connect to the database and prepare the query
 			Connection connection = DatabaseUtility.connectionGetConnection();
-			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ROOM_USERS);
-			preparedstatement.setString(1, cri.getId());
-			
-			// Execute the SELECT query
-			ResultSet resultset = preparedstatement.executeQuery();
-			
-			// Users retrieved: put all users into a list
-			List<UserInfo> rguserinfo = new ArrayList<UserInfo>();
-			while (resultset.next()) {
-				String stUsername = resultset.getString("u_user_name");
-				String stPassword = resultset.getString("u_password");
-				String stRegId = resultset.getString("u_device_id");
-				rguserinfo.add(new UserInfo(stUsername, stPassword, stRegId));
-			}
-
-			resultset.close();
+			List<UserInfo> rgu = rguserinfoGetRoomUsers(connection, cri);
 			DatabaseUtility.closeConnection(connection);
-			return rguserinfo;
+			return rgu;
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
-			e.printStackTrace();
 			return null;
 		} catch (SQLException e) {
 			// SQL query failed: Messages not retrieved
-			e.printStackTrace();
 			return null;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
 			return null;
 		}
 	}
 
-	//TODO: fix distance
-	private static double distance(double lat1, double lon1, double lat2, double lon2) {
-		double earthRadius = 6371000; // meters
-		double dLat = deg2rad(lat2-lat1);
-		double dLon = deg2rad(lon2-lon1);
-		lat1 = deg2rad(lat1);
-		lat2 = deg2rad(lat2);
-
-		double a = 
-				Math.sin(dLat/2) * Math.sin(dLat/2) +
-				Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+	/**
+	 * Retrieves all user from the given room. Uses the given database connection.
+	 * 
+	 * @param connection      DB connection to use
+	 * @param cri             The room
+	 * @return                Active users in the room
+	 * @throws SQLException
+	 */
+	private static List<UserInfo> rguserinfoGetRoomUsers(Connection connection, ChatRoomInfo cri) throws SQLException {
+		// Prepare the query
+		PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ROOM_USERS, 
+				ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		preparedstatement.setString(1, cri.getId());
 		
-		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-		double distance = earthRadius * c;
-		return distance;
-	}
+		// Execute the SELECT query
+		ResultSet resultset = preparedstatement.executeQuery();
+		
+		// Users retrieved: put all users into a list
+		List<UserInfo> rguserinfo = new ArrayList<UserInfo>();
+		while (resultset.next()) {
+			String stUsername = resultset.getString("u_user_name");
+			String stPassword = resultset.getString("u_password");
+			String stRegId = resultset.getString("u_device_id");
+			rguserinfo.add(new UserInfo(stUsername, stPassword, stRegId));
+		}
 
-	private static double deg2rad(double deg) {
-		return (deg * Math.PI / 180.0);
-	}
-	
-	private static double rad2deg(double rad) {
-		return (rad * 180.0 / Math.PI);
+		preparedstatement.close();
+		resultset.close();
+		return rguserinfo;
 	}
 }
