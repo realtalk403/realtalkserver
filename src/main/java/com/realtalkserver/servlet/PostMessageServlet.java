@@ -5,6 +5,7 @@ package com.realtalkserver.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.logging.Level;
 
 import javax.servlet.ServletException;
@@ -17,6 +18,7 @@ import org.json.JSONObject;
 import com.realtalkserver.util.ChatCode;
 import com.realtalkserver.util.ChatServerManager;
 import com.realtalkserver.util.ChatRoomInfo;
+import com.realtalkserver.util.GCMSendMessages;
 import com.realtalkserver.util.MessageInfo;
 import com.realtalkserver.util.RequestParameters;
 import com.realtalkserver.util.ResponseParameters;
@@ -60,7 +62,7 @@ public class PostMessageServlet extends BaseServlet {
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		logger.log(Level.INFO, "Processing Post Message Request to Database");
-		ChatCode chatCodeJoinSuccess = ChatServerManager.chatcodePostMessage(userInfo, chatRoomInfo, messageInfo);
+		ChatCode chatCodePostSuccess = ChatServerManager.chatcodePostMessage(userInfo, chatRoomInfo, messageInfo);
 		logger.log(Level.INFO, "Request completed");
 				
 		JSONObject jsonResponse = new JSONObject();
@@ -72,20 +74,20 @@ public class PostMessageServlet extends BaseServlet {
 			jsonResponse.put(RequestParameters.PARAMETER_ROOM_NAME, stRoomName);
 			jsonResponse.put(RequestParameters.PARAMETER_ROOM_ID, stRoomId);
 			
-			if (chatCodeJoinSuccess == ChatCode.SUCCESS) {
+			if (chatCodePostSuccess == ChatCode.SUCCESS) {
 				jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, "true");
 			} else {
 				jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, "false");
 				// Set error code response
-				if (ChatCode.USER_ERROR == chatCodeJoinSuccess) {
+				if (ChatCode.USER_ERROR == chatCodePostSuccess) {
 					// User Error
 					jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_USER);
 					jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_USER_ERROR);
-				} else if (ChatCode.ROOM_ERROR == chatCodeJoinSuccess) {
+				} else if (ChatCode.ROOM_ERROR == chatCodePostSuccess) {
 					// Room Error
 					jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_ROOM);
 					jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_ROOM_ERROR);
-			    } else if (ChatCode.MESSAGE_ERROR == chatCodeJoinSuccess) {
+			    } else if (ChatCode.MESSAGE_ERROR == chatCodePostSuccess) {
 			    	// Message Error
 			    	jsonResponse.put(ResponseParameters.PARAMETER_ERROR_CODE, ResponseParameters.RESPONSE_ERROR_CODE_MESSAGE);
 			    	jsonResponse.put(ResponseParameters.PARAMETER_ERROR_MSG, ResponseParameters.RESPONSE_MESSAGE_MESSAGE_ERROR);
@@ -99,6 +101,14 @@ public class PostMessageServlet extends BaseServlet {
 			// Exception will never get thrown if keys not null.
 		}
 		logger.log(Level.INFO, "Setting up response successful");
+		
+		// If posting of message was successful, push message to other devices for an update.
+		if (ChatCode.SUCCESS == chatCodePostSuccess) {
+		    logger.log(Level.INFO, "Sending push notifications thru GCM");
+		    List<UserInfo> rguserinfo = ChatServerManager.rguserinfoGetRoomUsers(chatRoomInfo);
+		    GCMSendMessages.sendMulticastMessage(rguserinfo, messageInfo, chatRoomInfo);
+		    logger.log(Level.INFO, "Sending to GCM completed");
+		}
 		
 		resp.setContentType("application/json");
 		PrintWriter out = resp.getWriter();

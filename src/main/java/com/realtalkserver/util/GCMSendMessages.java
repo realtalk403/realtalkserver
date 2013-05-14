@@ -23,25 +23,41 @@ public class GCMSendMessages {
     // Max Size for GCM
     private static final int MULTICAST_SIZE = 1000;
     
+    // Retry Limit for GCM
+    private static final int GCM_SEND_RETRY = 5;
+    
     // Logger for logging process
     private static final Logger logger = Logger.getLogger(GCMSendMessages.class.getName());
     
-    public static void sendMulticastMessage(List<String> rgRegId, 
-            List<UserInfo> rgUserinfo, MessageInfo messageinfo, ChatRoomInfo chatroominfo) {
+    /**
+     * This method pushes new messages to GCM and then to the devices in interest. It converts the 
+     * message into a suitable format for GCM and pushes it to the server. It sends the messages
+     * asynchronously in batches of 1000 messages each.
+     * 
+     * @param rgUserinfo   List of UserInfos to send to. Should have a valid username, password and reg id.
+     * @param messageinfo  Object containing the message details to send.
+     * @param chatroominfo Information about the chatroom that message should be sent to.
+     */
+    public static void sendMulticastMessage(List<UserInfo> rgUserinfo, 
+            MessageInfo messageinfo, ChatRoomInfo chatroominfo) {
         logger.info("GCM: Beginning to send GCM Multicast message(s)");
-        if (!rgRegId.isEmpty()) {
+        if (!rgUserinfo.isEmpty()) {
             logger.info("GCM: Creating Multicast Message");
             Message messagePost = createGCMMessage(messageinfo, chatroominfo);
             // Send a multicast message using JSON
             // Must split in chunks of 1000 devices (GCM limit)
+            List<String> rgRegId = rgRegIdExtractIdFromU(rgUserinfo);
             List<String> rgPartialRegIds = new ArrayList<String>(rgRegId.size());
+            List<UserInfo> rgPartialUserinfo = new ArrayList<UserInfo>(rgUserinfo.size());
             int iTasks = 0;
             for (int i = 0; i < rgRegId.size(); i++) {
                 rgPartialRegIds.add(rgRegId.get(i));
+                rgPartialUserinfo.add(rgUserinfo.get(i));
                 if (MULTICAST_SIZE == rgPartialRegIds.size() || i == rgRegId.size() - 1) {
                     asyncSend(new ArrayList<String>(rgPartialRegIds), 
-                            new ArrayList<UserInfo>(rgUserinfo), messagePost);
+                            new ArrayList<UserInfo>(rgPartialUserinfo), messagePost);
                     rgPartialRegIds.clear();
+                    rgPartialUserinfo.clear();
                     iTasks++;
                 }
             }
@@ -72,7 +88,7 @@ public class GCMSendMessages {
                 MulticastResult multicastResult;
                 // Post Messages
                 try {
-                    multicastResult = sender.send(messagePost, rgRegId, 5);
+                    multicastResult = sender.send(messagePost, rgRegId, GCM_SEND_RETRY);
                 } catch (IOException e) {
                     logger.log(Level.SEVERE, "GCM: Error Posting Messages");
                     return;
@@ -113,6 +129,21 @@ public class GCMSendMessages {
             
         }).start();
         
+    }
+    
+    /**
+     * Helper method that creates a list of registration ids given a list of
+     * userinfo objects that have the same order with that as the user info list.
+     * 
+     * @param rgU List of UserInfos to extract from.
+     * @return    List of Registration Ids that are arranged in the same manner as the user info list.
+     */
+    private static List<String> rgRegIdExtractIdFromU(final List<UserInfo> rgU) {
+        List<String> rgRegId = new ArrayList<String>();
+        for (UserInfo userinfo : rgU) {
+            rgRegId.add(userinfo.getRegistrationId());
+        }
+        return new ArrayList<String>(rgRegId);
     }
 
     /**
