@@ -40,16 +40,15 @@ public class AddRoomServlet extends BaseServlet {
         logger.log(Level.INFO, "Retrieval Successful");
         
         logger.log(Level.INFO, "Retrieving room info");
-        String stRoomId = getParameter(req, RequestParameters.PARAMETER_ROOM_ID);
         String stRoomName = getParameter(req, RequestParameters.PARAMETER_ROOM_NAME);
         String stRoomDescription = getParameter(req, RequestParameters.PARAMETER_ROOM_DESCRIPTION);
         logger.log(Level.INFO, "Retrieval Successful");
         
         UserInfo userinfo = new UserInfo(stUser, stPwd, stRegId);
-        ChatRoomInfo chatroominfo = new ChatRoomInfo(stRoomName, stRoomId, stRoomDescription, 0, 0, stUser, 1, null);
+        ChatRoomInfo chatroominfo = new ChatRoomInfo(stRoomName, stRoomDescription, 0, 0, stUser, 1, null);
         // Add room and generate response to indicate if successful
         logger.log(Level.INFO, "Sending query to database");
-        int iChatroom = ChatServerManager.iAddRoom(userinfo, chatroominfo);
+        int iChatroom = ChatServerManager.addRoom(userinfo, chatroominfo);
         logger.log(Level.INFO, "Query complete");
         
         // Generate JSON response

@@ -26,9 +26,10 @@ public class UserManager {
 	 *                 false if otherwise.
 	 */
 	public static boolean fAddUser(String userName, String password, String regId) {
+		Connection connection = null;
 		try {
 			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
+			connection = DatabaseUtility.connectionGetConnection();
 			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_ADD_USER);
 			preparedstatement.setString(1, userName);
 			preparedstatement.setString(2, regId);
@@ -48,17 +49,13 @@ public class UserManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: user was not added.
-			e.printStackTrace();
-			return false;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: user was not added
-			e.printStackTrace();
-			return false;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			e.printStackTrace();
-			return false;
 		}
+		DatabaseUtility.closeConnection(connection);
+		return false;
 	}
 
 	/**
@@ -72,12 +69,14 @@ public class UserManager {
 	 *                 false if otherwise.
 	 */
 	public static boolean fRemoveUser(String userName, String password, String regId) {
+		Connection connection = null;
 		try {
 			if (fAuthenticateUser(userName, password)) {
 				// Connect to the database and prepare the query
-				Connection connection = DatabaseUtility.connectionGetConnection();
+				connection = DatabaseUtility.connectionGetConnection();
 				PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_REMOVE_USER);
 				preparedstatement.setString(1, userName);
+				preparedstatement.setString(2, userName);
 	
 				// Execute the DELETE query
 				int result = preparedstatement.executeUpdate();
@@ -96,14 +95,13 @@ public class UserManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: user was not added.
-			return false;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: user was not added.
-			return false;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			return false;
 		}
+		DatabaseUtility.closeConnection(connection);
+		return false;
 	}
 
 	/**
@@ -118,10 +116,11 @@ public class UserManager {
 	 *                    false if otherwise.
 	 */
 	public static boolean fChangePassword(String userName, String oldPassword, String newPassword, String regId) {
+		Connection connection = null;
 		try {
 			if (fAuthenticateUser(userName, oldPassword)) {
 				// Connect to the database and prepare the query
-				Connection connection = DatabaseUtility.connectionGetConnection();
+				connection = DatabaseUtility.connectionGetConnection();
 				PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_CHANGE_PASSWORD);
 				preparedstatement.setString(1, newPassword);
 				preparedstatement.setString(2, userName);
@@ -143,14 +142,13 @@ public class UserManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: user was not added.
-			return false;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: user was not added.
-			return false;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			return false;
 		}
+		DatabaseUtility.closeConnection(connection);
+		return false;
 	}
 
 	/**
@@ -164,10 +162,11 @@ public class UserManager {
 	 * 				   in the database. false if otherwise.
 	 */
 	public static boolean fChangeId(String userName, String password, String newRegId) {
+		Connection connection = null;
 		try {
 			if (fAuthenticateUser(userName, password)) {
 				// Connect to the database and prepare the query
-				Connection connection = DatabaseUtility.connectionGetConnection();
+				connection = DatabaseUtility.connectionGetConnection();
 				PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_CHANGE_ID);
 				preparedstatement.setString(1, newRegId);
 				preparedstatement.setString(2, userName);
@@ -189,14 +188,13 @@ public class UserManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: user was not added.
-			return false;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: user was not added.
-			return false;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			return false;
 		}
+		DatabaseUtility.closeConnection(connection);
+		return false;
 	}
 
 	/**
@@ -210,9 +208,10 @@ public class UserManager {
 	 *                 false if otherwise.
 	 */
 	public static boolean fAuthenticateUser(String userName, String password) {
+		Connection connection = null;
 		try {
 			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
+			connection = DatabaseUtility.connectionGetConnection();
 			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_AUTHENTICATE);
 			preparedstatement.setString(1, userName);
 			preparedstatement.setString(2, password);
@@ -233,13 +232,12 @@ public class UserManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: user was not added.
-			return false;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: user was not added.
-			return false;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			return false;
 		}
+		DatabaseUtility.closeConnection(connection);
+		return false;
 	}
 }
