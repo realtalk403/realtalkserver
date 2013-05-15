@@ -32,7 +32,7 @@ public class HelloWorldTest {
     }
 
     @Test
-    public void test() {
+    public void helloworldtest() {
         assertTrue(true);
     }
 
