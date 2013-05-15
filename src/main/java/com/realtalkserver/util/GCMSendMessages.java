@@ -160,7 +160,7 @@ public class GCMSendMessages {
             .addData(RequestParameters.PARAMETER_MESSAGE_TIMESTAMP, stTimestamp)
             .addData(RequestParameters.PARAMETER_MESSAGE_BODY, messageinfo.getBody())
             .addData(RequestParameters.PARAMETER_ROOM_NAME, chatroominfo.getName())
-            .addData(RequestParameters.PARAMETER_ROOM_ID, chatroominfo.getId())
+            .addData(RequestParameters.PARAMETER_ROOM_ID, String.valueOf(chatroominfo.getId()))
             .timeToLive(600)
             .build();
         return message;
