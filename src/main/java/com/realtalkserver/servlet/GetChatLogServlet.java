@@ -39,9 +39,9 @@ public class GetChatLogServlet extends BaseServlet {
         // Room Info
         logger.log(Level.INFO, "Retrieving Chat Room Information");
         String stRoomName = getParameter(req, RequestParameters.PARAMETER_ROOM_NAME);
-        String stRoomId = getParameter(req, RequestParameters.PARAMETER_ROOM_ID);
+		String stRoomId = getParameter(req, RequestParameters.PARAMETER_ROOM_ID);
         // TODO: Extra Room information may be required.
-        ChatRoomInfo chatroominfo = new ChatRoomInfo(stRoomName, stRoomId, "", 0, 0, "", 0, null);
+        ChatRoomInfo chatroominfo = new ChatRoomInfo(stRoomName, Integer.parseInt(stRoomId), "", 0, 0, "", 0, null);
         logger.log(Level.INFO, "Retrieval Successful");
         
         logger.log(Level.INFO, "Processing Get Chat Log Request to Database");
@@ -55,7 +55,7 @@ public class GetChatLogServlet extends BaseServlet {
         JSONObject jsonResponse = new JSONObject();
         try {
             jsonResponse.put(RequestParameters.PARAMETER_ROOM_NAME, stRoomName);
-            jsonResponse.put(RequestParameters.PARAMETER_ROOM_ID, stRoomId);
+			jsonResponse.put(RequestParameters.PARAMETER_ROOM_ID, stRoomId);
             if (ChatCode.SUCCESS == chatcodeGetPost) {
                 jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, "true");
                 

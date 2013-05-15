@@ -57,7 +57,9 @@ public class DatabaseUtility {
 	 * @param connection 	the database connection to close
 	 * @throws SQLException
 	 */
-	public static void closeConnection(Connection connection) throws SQLException {
-		connection.close();
+	public static void closeConnection(Connection connection) {
+		try {
+			connection.close();
+		} catch (SQLException e) {}
 	}
 }
