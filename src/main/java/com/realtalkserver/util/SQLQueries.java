@@ -15,6 +15,9 @@ public class SQLQueries {
 
 	public static final String QUERY_REMOVE_USER = 
 			"DELETE " +
+			"FROM active_users " +
+			"WHERE user_name = ?; " +
+			"DELETE " +
 			"FROM users " +
 			"WHERE user_name = ?;";
 
@@ -37,8 +40,8 @@ public class SQLQueries {
 	// Room queries
 	public static final String QUERY_ADD_ROOM = 
 			"INSERT " +
-			"INTO rooms " +
-			"values(?, ?, ?, ?, ?, ?, ?);";
+			"INTO rooms (room_name, room_desc, time_created, creator_name, latitude, longitude) " +
+			"values(?, ?, ?, ?, ?, ?);";
 
 	public static final String QUERY_JOIN_ROOM = 
 			"INSERT " +

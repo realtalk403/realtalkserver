@@ -29,18 +29,18 @@ public class ChatServerManager {
 	 * @param  chatRoomInfo ChatRooms's Information
 	 * @return              0 if room was successfully added. -1 if room already exists and -2 if otherwise.
 	 */
-	public static int iAddRoom(UserInfo userInfo, ChatRoomInfo chatRoomInfo) {
+	public static int addRoom(UserInfo userInfo, ChatRoomInfo chatRoomInfo) {
+		Connection connection = null;
 		try {
 			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
+			connection = DatabaseUtility.connectionGetConnection();
 			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_ADD_ROOM);
-			preparedstatement.setString(1, chatRoomInfo.getId());
-			preparedstatement.setString(2, chatRoomInfo.getName());
-			preparedstatement.setString(3, chatRoomInfo.getDescription());
-			preparedstatement.setTimestamp(4, chatRoomInfo.getTimeStampCreated());
-			preparedstatement.setString(5, chatRoomInfo.getCreator());
-			preparedstatement.setDouble(6, chatRoomInfo.getLatitude());
-			preparedstatement.setDouble(7, chatRoomInfo.getLongitude());
+			preparedstatement.setString(1, chatRoomInfo.getName());
+			preparedstatement.setString(2, chatRoomInfo.getDescription());
+			preparedstatement.setTimestamp(3, chatRoomInfo.getTimeStampCreated());
+			preparedstatement.setString(4, chatRoomInfo.getCreator());
+			preparedstatement.setDouble(5, chatRoomInfo.getLatitude());
+			preparedstatement.setDouble(6, chatRoomInfo.getLongitude());
 
 			// Execute the INSERT query
 			int result = preparedstatement.executeUpdate();
@@ -51,19 +51,18 @@ public class ChatServerManager {
 				// Room was added
 				return 0;
 			} else {
-				// User was not added
+				// Room was not added
 				return -1;
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: room was not added.
-			return -2;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: room was not added
-			return -2;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			return -2;
 		}
+		DatabaseUtility.closeConnection(connection);
+		return -2;
 	}
 
 	/**
@@ -74,12 +73,13 @@ public class ChatServerManager {
 	 * @return              Appropriate Chat Code denoting the result.
 	 */
 	public static ChatCode chatcodeJoinRoom(UserInfo userInfo, ChatRoomInfo chatRoomInfo) {
+		Connection connection = null;
 		try {
 			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
+			connection = DatabaseUtility.connectionGetConnection();
 			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_JOIN_ROOM);
 			preparedstatement.setString(1, userInfo.getUserName());
-			preparedstatement.setString(2, chatRoomInfo.getId());
+			preparedstatement.setInt(2, chatRoomInfo.getId());
 
 			// Execute the INSERT query
 			int result = preparedstatement.executeUpdate();
@@ -95,14 +95,13 @@ public class ChatServerManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: User did not join room
-			return ChatCode.FAILURE;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: User did not join room
-			return ChatCode.FAILURE;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			return ChatCode.FAILURE;
 		}
+		DatabaseUtility.closeConnection(connection);
+		return ChatCode.FAILURE;
 	}
 
 	/**
@@ -113,12 +112,13 @@ public class ChatServerManager {
 	 * @return              Appropriate Chat Code denoting the result.
 	 */
 	public static ChatCode chatcodeLeaveRoom(UserInfo userInfo, ChatRoomInfo chatRoomInfo) {
+		Connection connection = null;
 		try {
 			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
+			connection = DatabaseUtility.connectionGetConnection();
 			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_LEAVE_ROOM);
 			preparedstatement.setString(1, userInfo.getUserName());
-			preparedstatement.setString(2, chatRoomInfo.getId());
+			preparedstatement.setInt(2, chatRoomInfo.getId());
 
 			// Execute the DELETE query
 			int result = preparedstatement.executeUpdate();
@@ -134,14 +134,13 @@ public class ChatServerManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: User was not removed from room
-			return ChatCode.FAILURE;
 		} catch (SQLException e) {
 			// SQL INSERT query failed: User was not removed from room
-			return ChatCode.FAILURE;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			return ChatCode.FAILURE;
 		}
+		DatabaseUtility.closeConnection(connection);
+		return ChatCode.FAILURE;
 	}
 
 	/**
@@ -153,11 +152,12 @@ public class ChatServerManager {
 	 * @return              Appropriate Chat Code denoting the result.
 	 */
 	public static ChatCode chatcodePostMessage(UserInfo userInfo, ChatRoomInfo chatRoomInfo, MessageInfo msgInfo) {
+		Connection connection = null;
 		try {
 			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
+			connection = DatabaseUtility.connectionGetConnection();
 			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_POST_MESSAGE);
-			preparedstatement.setString(1, chatRoomInfo.getId());
+			preparedstatement.setInt(1, chatRoomInfo.getId());
 			preparedstatement.setString(2, userInfo.getUserName());
 			preparedstatement.setTimestamp(3, msgInfo.getTimeStamp());
 			preparedstatement.setString(4, msgInfo.getBody());
@@ -176,14 +176,13 @@ public class ChatServerManager {
 			}
 		} catch (URISyntaxException e) {
 			// Database connection failed: Message was not posted
-			return ChatCode.FAILURE;
 		} catch (SQLException e) {
 			// SQL query failed: Message was not posted
-			return ChatCode.FAILURE;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			return ChatCode.FAILURE;
 		}
+		DatabaseUtility.closeConnection(connection);
+		return ChatCode.FAILURE;
 	}
 
 	/**
@@ -197,12 +196,13 @@ public class ChatServerManager {
 	 *                     ChatResultSet's ChatCode reflects the appropriate error.
 	 */
 	public static ChatResultSet cResSetGetRecentChat(ChatRoomInfo chatRoomInfo, Timestamp timestamp) {
+		Connection connection = null;
 		try {
 			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
+			connection = DatabaseUtility.connectionGetConnection();
 			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_RECENT_MESSAGES, 
 					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			preparedstatement.setString(1, chatRoomInfo.getId());
+			preparedstatement.setInt(1, chatRoomInfo.getId());
 			preparedstatement.setTimestamp(2, timestamp);
 
 			// Execute the SELECT query
@@ -222,14 +222,13 @@ public class ChatServerManager {
 			return new ChatResultSet(rgmessageinfo, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
-			return new ChatResultSet(ChatCode.FAILURE);
 		} catch (SQLException e) {
 			// SQL  query failed: Messages not retrieved
-			return new ChatResultSet(ChatCode.FAILURE);
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			return new ChatResultSet(ChatCode.FAILURE);
 		}
+		DatabaseUtility.closeConnection(connection);
+		return new ChatResultSet(ChatCode.FAILURE);
 	}
 
 	/**
@@ -240,12 +239,13 @@ public class ChatServerManager {
 	 *                     ChatResultSet's ChatCode reflects the appropriate error.
 	 */
 	public static ChatResultSet cResSetGetEntireChat(ChatRoomInfo chatRoomInfo) {
+		Connection connection = null;
 		try {
 			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
+			connection = DatabaseUtility.connectionGetConnection();
 			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ALL_MESSAGES, 
 					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			preparedstatement.setString(1, chatRoomInfo.getId());
+			preparedstatement.setInt(1, chatRoomInfo.getId());
 
 			// Execute the SELECT query
 			ResultSet resultset = preparedstatement.executeQuery();
@@ -264,14 +264,13 @@ public class ChatServerManager {
 			return new ChatResultSet(rgmessageinfo, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
-			return new ChatResultSet(ChatCode.FAILURE);
 		} catch (SQLException e) {
 			// SQL query failed: Messages not retrieved
-			return new ChatResultSet(ChatCode.FAILURE);
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			return new ChatResultSet(ChatCode.FAILURE);
 		}
+		DatabaseUtility.closeConnection(connection);
+		return new ChatResultSet(ChatCode.FAILURE);
 	}
 
 	/**
@@ -283,9 +282,10 @@ public class ChatServerManager {
 	 * @return            A ChatroomResultSet containing rooms and success/error messages 
 	 */
 	public static ChatroomResultSet crrsNearbyRooms(double latitude, double longitude, double radiusMeters) {
+		Connection connection = null;
 		try {
 			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
+			connection = DatabaseUtility.connectionGetConnection();
 			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ALL_ROOMS);
 
 			// Execute the SELECT query
@@ -300,14 +300,14 @@ public class ChatServerManager {
 				if (LocationLogic.distance(latitude, longitude, roomLatitude, roomLongitude) < radiusMeters) {
 					// Add the room with all info about it
 					String stName = resultset.getString("room_name");
-					String stId = resultset.getString("room_id");
+					int id = resultset.getInt("room_id");
 					String stDesc = resultset.getString("room_desc");
 					String stCreator = resultset.getString("creator_name");
 					Timestamp timestampCreated = resultset.getTimestamp("time_created");
 					int numUsers = iNumUsers(connection, new ChatRoomInfo(
-							stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, 0, timestampCreated));
+							stName, id, stDesc, roomLatitude, roomLongitude, stCreator, 0, timestampCreated));
 					rgcri.add(new ChatRoomInfo(
-							stName, stId, stDesc, roomLatitude, roomLongitude, stCreator, numUsers, timestampCreated));
+							stName, id, stDesc, roomLatitude, roomLongitude, stCreator, numUsers, timestampCreated));
 				}
 			}
 			
@@ -319,14 +319,13 @@ public class ChatServerManager {
 			return new ChatroomResultSet(rgcri, ChatCode.SUCCESS);
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
-			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		} catch (SQLException e) {
 			// SQL query failed: Messages not retrieved
-			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			return new ChatroomResultSet(null, ChatCode.FAILURE);
 		}
+		DatabaseUtility.closeConnection(connection);
+		return new ChatroomResultSet(null, ChatCode.FAILURE);
 	}
 
 	/**
@@ -396,22 +395,22 @@ public class ChatServerManager {
 	 * @return         Users in that room, or null if an error occurred
 	 */
 	public static List<UserInfo> rguserinfoGetRoomUsers(ChatRoomInfo cri) {
+		Connection connection = null;
 		try {
 			// Connect to the database and prepare the query
-			Connection connection = DatabaseUtility.connectionGetConnection();
+			connection = DatabaseUtility.connectionGetConnection();
 			List<UserInfo> rgu = rguserinfoGetRoomUsers(connection, cri);
 			DatabaseUtility.closeConnection(connection);
 			return rgu;
 		} catch (URISyntaxException e) {
 			// Database connection failed: Messages not retrieved
-			return null;
 		} catch (SQLException e) {
 			// SQL query failed: Messages not retrieved
-			return null;
 		} catch (ClassNotFoundException e) {
 			// Postgresql driver error
-			return null;
 		}
+		DatabaseUtility.closeConnection(connection);
+		return null;
 	}
 
 	/**
@@ -426,7 +425,7 @@ public class ChatServerManager {
 		// Prepare the query
 		PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_ROOM_USERS, 
 				ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-		preparedstatement.setString(1, cri.getId());
+		preparedstatement.setInt(1, cri.getId());
 		
 		// Execute the SELECT query
 		ResultSet resultset = preparedstatement.executeQuery();
