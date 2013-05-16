@@ -5,6 +5,12 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+/**
+ * Class used to load the API Key upon startup of Server.
+ * 
+ * @author Colin Kho
+ *
+ */
 public class APIKeyInitializer implements ServletContextListener {
     static final String ATTRIBUTE_ACCESS_KEY = "apiKey";
 
@@ -24,7 +30,15 @@ public class APIKeyInitializer implements ServletContextListener {
     protected String getKey() {
         return API_KEY;
     }
-
-    public void contextDestroyed(ServletContextEvent event) {
+    
+    /**
+     * Public method to retrieve API Key.
+     * 
+     * @return Api Key.
+     */
+    public static String getApiKey() {
+        return API_KEY;
     }
+
+    public void contextDestroyed(ServletContextEvent event) { }
 }
