@@ -304,7 +304,7 @@ public class ChatServerManager {
 					String stDesc = resultset.getString("room_desc");
 					String stCreator = resultset.getString("creator_name");
 					Timestamp timestampCreated = resultset.getTimestamp("time_created");
-					int numUsers = iNumUsers(connection, new ChatRoomInfo(
+					int numUsers = numUsers(connection, new ChatRoomInfo(
 							stName, id, stDesc, roomLatitude, roomLongitude, stCreator, 0, timestampCreated));
 					rgcri.add(new ChatRoomInfo(
 							stName, id, stDesc, roomLatitude, roomLongitude, stCreator, numUsers, timestampCreated));
@@ -313,6 +313,55 @@ public class ChatServerManager {
 			
 			// Sort: closest rooms are first
 			rgcri = LocationLogic.rgcriSortByProximity(rgcri, latitude, longitude);
+			
+			resultset.close();
+			DatabaseUtility.closeConnection(connection);
+			return new ChatroomResultSet(rgcri, ChatCode.SUCCESS);
+		} catch (URISyntaxException e) {
+			// Database connection failed: Messages not retrieved
+		} catch (SQLException e) {
+			// SQL query failed: Messages not retrieved
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
+		}
+		DatabaseUtility.closeConnection(connection);
+		return new ChatroomResultSet(null, ChatCode.FAILURE);
+	}
+	
+	/**
+	 * Retrieves all rooms that the given user has joined.
+	 * 
+	 * @param userInfo    The user
+	 * @return            A ChatroomResultSet containing rooms and success/error messages 
+	 */
+	public static ChatroomResultSet crrsJoinedRooms(UserInfo userInfo) {
+		Connection connection = null;
+		try {
+			// Connect to the database and prepare the query
+			connection = DatabaseUtility.connectionGetConnection();
+			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_JOINED_ROOMS,
+					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			preparedstatement.setString(1, userInfo.getUserName());
+
+			// Execute the SELECT query
+			ResultSet resultset = preparedstatement.executeQuery();
+
+			// Rooms retrieved
+			List<ChatRoomInfo> rgcri = new ArrayList<ChatRoomInfo>();
+			while (resultset.next()) {
+				// Add the room with all info about it
+				String stName = resultset.getString("r_room_name");
+				int id = resultset.getInt("r_room_id");
+				String stDesc = resultset.getString("r_room_desc");
+				String stCreator = resultset.getString("r_creator_name");
+				Timestamp timestampCreated = resultset.getTimestamp("r_time_created");
+				double roomLatitude = resultset.getDouble("r_latitude");
+				double roomLongitude = resultset.getDouble("r_longitude");
+				int numUsers = numUsers(connection, new ChatRoomInfo(
+						stName, id, stDesc, roomLatitude, roomLongitude, stCreator, 0, timestampCreated));
+				rgcri.add(new ChatRoomInfo(
+						stName, id, stDesc, roomLatitude, roomLongitude, stCreator, numUsers, timestampCreated));
+			}
 			
 			resultset.close();
 			DatabaseUtility.closeConnection(connection);
@@ -353,7 +402,7 @@ public class ChatServerManager {
 	 * @param cri      The chat room
 	 * @return         Number of users in that room, or -1 if an error occured
 	 */
-	public static int iNumUsers(ChatRoomInfo cri) {
+	public static int numUsers(ChatRoomInfo cri) {
 		// Get all users in the room
 		List<UserInfo> rgUser = rguserinfoGetRoomUsers(cri);
 		if (rgUser == null) {
@@ -372,7 +421,7 @@ public class ChatServerManager {
 	 * @param cri           The room
 	 * @return              Number of uses in the room
 	 */
-	private static int iNumUsers(Connection connection, ChatRoomInfo cri) {
+	private static int numUsers(Connection connection, ChatRoomInfo cri) {
 		List<UserInfo> rgUser;
 		try {
 			// Get all users in the room
