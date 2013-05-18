@@ -85,4 +85,17 @@ public class SQLQueries {
 			"WHERE a.room_id = ? " +
 			"AND a.user_name = u.user_name;";
 	
+	public static final String QUERY_GET_JOINED_ROOMS = 
+			"SELECT " +
+			"r.room_id AS r_room_id, " +
+			"r.room_name AS r_room_name, " +
+			"r.room_desc AS r_room_desc, " +
+			"r.time_created AS r_time_created, " +
+			"r.creator_name AS r_creator_name, " +
+			"r.latitude AS r_latitude, " +	
+			"r.longitude AS r_longitude " +	
+			"FROM active_users a, rooms r " +
+			"WHERE a.room_id = r.room_id " +
+			"AND a.user_name = ?;";
+	
 }

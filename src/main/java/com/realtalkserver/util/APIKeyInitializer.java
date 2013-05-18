@@ -14,7 +14,7 @@ import javax.servlet.ServletContextListener;
 public class APIKeyInitializer implements ServletContextListener {
     static final String ATTRIBUTE_ACCESS_KEY = "apiKey";
 
-    private static final String API_KEY = "AIzaSyBXfY3tvJ8tX4ia7mFsbpBZSOQeONWa95c";
+    private static final String API_KEY = "AIzaSyCPcyokci46mO6s9nM0qhkZSqNEMpCTAAs";
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
