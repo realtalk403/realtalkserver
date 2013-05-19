@@ -37,6 +37,9 @@ public class AddRoomServlet extends BaseServlet {
         String stRegId = getParameter(req, RequestParameters.PARAMETER_REG_ID);
         String stUser = getParameter(req, RequestParameters.PARAMETER_USER);
         String stPwd = getParameter(req, RequestParameters.PARAMETER_PWORD);
+        double latitude = Double.valueOf(getParameter(req, RequestParameters.PARAMETER_USER_LATITUDE));
+        double longitude = Double.valueOf(getParameter(req, RequestParameters.PARAMETER_USER_LONGITUDE));
+        
         logger.log(Level.INFO, "Retrieval Successful");
         
         logger.log(Level.INFO, "Retrieving room info");
@@ -45,7 +48,7 @@ public class AddRoomServlet extends BaseServlet {
         logger.log(Level.INFO, "Retrieval Successful");
         
         UserInfo userinfo = new UserInfo(stUser, stPwd, stRegId);
-        ChatRoomInfo chatroominfo = new ChatRoomInfo(stRoomName, stRoomDescription, 0, 0, stUser, 1, null);
+        ChatRoomInfo chatroominfo = new ChatRoomInfo(stRoomName, stRoomDescription, latitude, longitude, stUser, 1, null);
         // Add room and generate response to indicate if successful
         logger.log(Level.INFO, "Sending query to database");
         int iChatroom = ChatServerManager.addRoom(userinfo, chatroominfo);
