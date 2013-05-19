@@ -74,12 +74,19 @@ public class UserManager {
 			if (fAuthenticateUser(userName, password)) {
 				// Connect to the database and prepare the query
 				connection = DatabaseUtility.connectionGetConnection();
-				PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_REMOVE_USER);
+				PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_LEAVE_ALL_ROOMS);
 				preparedstatement.setString(1, userName);
-				preparedstatement.setString(2, userName);
 	
 				// Execute the DELETE query
 				int result = preparedstatement.executeUpdate();
+				DatabaseUtility.closeConnection(connection);
+				
+				
+				PreparedStatement preparedstatement2 = connection.prepareStatement(SQLQueries.QUERY_REMOVE_USER);
+				preparedstatement.setString(1, userName);
+	
+				// Execute the DELETE query
+				result = preparedstatement2.executeUpdate();
 				DatabaseUtility.closeConnection(connection);
 	
 				// Check for correct result
