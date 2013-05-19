@@ -13,10 +13,12 @@ public class SQLQueries {
 			"INTO users " +
 			"values(?, ?, ?);";
 
-	public static final String QUERY_REMOVE_USER = 
+	public static final String QUERY_LEAVE_ALL_ROOMS = 
 			"DELETE " +
 			"FROM active_users " +
-			"WHERE user_name = ?; " +
+			"WHERE user_name = ?; ";
+
+	public static final String QUERY_REMOVE_USER =
 			"DELETE " +
 			"FROM users " +
 			"WHERE user_name = ?;";
