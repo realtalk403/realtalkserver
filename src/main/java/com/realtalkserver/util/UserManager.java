@@ -78,9 +78,7 @@ public class UserManager {
 				preparedstatement.setString(1, userName);
 	
 				// Execute the DELETE query
-				int result = preparedstatement.executeUpdate();
-				DatabaseUtility.closeConnection(connection);
-				
+				int result = preparedstatement.executeUpdate();				
 				
 				PreparedStatement preparedstatement2 = connection.prepareStatement(SQLQueries.QUERY_REMOVE_USER);
 				preparedstatement2.setString(1, userName);
