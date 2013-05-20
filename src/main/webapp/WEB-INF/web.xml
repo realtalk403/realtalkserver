@@ -111,4 +111,12 @@
       <servlet-name>nearbyRooms</servlet-name>
       <url-pattern>/nearbyRooms</url-pattern>
   </servlet-mapping>
+  <servlet>
+      <servlet-name>getUsersRooms</servlet-name>
+      <servlet-class>com.realtalkserver.servlet.UsersRoomsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>getUsersRooms</servlet-name>
+      <url-pattern>/userRooms</url-pattern>
+  </servlet-mapping>
 </web-app>
