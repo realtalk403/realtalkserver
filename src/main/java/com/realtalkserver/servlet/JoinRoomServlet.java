@@ -46,7 +46,7 @@ public class JoinRoomServlet extends BaseServlet {
 		// TODO: Extra Room information may be required.
 		ChatRoomInfo chatRoomInfo = new ChatRoomInfo(stRoomName, Integer.parseInt(stRoomId), "", 0, 0, "", 0, null);
 		String stAnon = getParameter(req, RequestParameters.PARAMETER_ANON);
-		boolean fAnon = stAnon.equals("TRUE") ? true : false;
+		boolean fAnon = stAnon.toUpperCase().equals("TRUE") ? true : false;
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		logger.log(Level.INFO, "Processing Join Request to Database");
@@ -60,6 +60,7 @@ public class JoinRoomServlet extends BaseServlet {
 			jsonResponse.put(RequestParameters.PARAMETER_PWORD, stPwd);
 			jsonResponse.put(RequestParameters.PARAMETER_ROOM_NAME, stRoomName);
 			jsonResponse.put(RequestParameters.PARAMETER_ROOM_ID, stRoomId);
+			jsonResponse.put(RequestParameters.PARAMETER_ANON, stAnon);
 			
 			if (chatCodeJoinSuccess == ChatCode.SUCCESS) {
 				jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, "true");
