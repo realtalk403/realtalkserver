@@ -72,14 +72,25 @@ public class ChatServerManager {
 	 * @param  chatRoomInfo ChatRooms's Information
 	 * @return              Appropriate Chat Code denoting the result.
 	 */
-	public static ChatCode chatcodeJoinRoom(UserInfo userInfo, ChatRoomInfo chatRoomInfo) {
+	public static ChatCode chatcodeJoinRoom(UserInfo userInfo, ChatRoomInfo chatRoomInfo, boolean fAnon) {
 		Connection connection = null;
 		try {
 			// Connect to the database and prepare the query
 			connection = DatabaseUtility.connectionGetConnection();
+			
+			String stTableAlias;
+			if (fAnon) {
+				// Users's alias will be a numbered anonymous username
+				stTableAlias = stGetAnonymousUsername(connection, userInfo, chatRoomInfo);
+			} else {
+				// User's alias will be their standard username
+				stTableAlias = userInfo.getUserName();
+			}
+
 			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_JOIN_ROOM);
 			preparedstatement.setString(1, userInfo.getUserName());
 			preparedstatement.setInt(2, chatRoomInfo.getId());
+			preparedstatement.setString(3, stTableAlias);
 
 			// Execute the INSERT query
 			int result = preparedstatement.executeUpdate();
@@ -87,7 +98,7 @@ public class ChatServerManager {
 
 			// Check for correct result
 			if (result == 1) {
-				// Uesr joined room
+				// User joined room
 				return ChatCode.SUCCESS;
 			} else {
 				// User did not join room
@@ -102,6 +113,38 @@ public class ChatServerManager {
 		}
 		DatabaseUtility.closeConnection(connection);
 		return ChatCode.FAILURE;
+	}
+
+	private static String stGetAnonymousUsername(Connection connection, 
+			UserInfo userInfo, ChatRoomInfo cri) throws SQLException {
+		// Prepare the query
+		PreparedStatement preparedstatementSelect = connection.prepareStatement(SQLQueries.QUERY_GET_ROOM_INFO, 
+				ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		preparedstatementSelect.setInt(1, cri.getId());
+		
+		// Execute the SELECT query
+		ResultSet resultsetSelect = preparedstatementSelect.executeQuery();
+		
+		String stUserAlias = "Anon";
+		if (resultsetSelect.next()) {
+			// Get the username
+			int anonCount = resultsetSelect.getInt("anon_count");
+			stUserAlias += (anonCount + 1);
+			preparedstatementSelect.close();
+			resultsetSelect.close();
+			
+			// Increment the count of anons for the table
+			PreparedStatement preparedstatementUpdate = connection.prepareStatement(
+					SQLQueries.QUERY_INCREMENT_ROOM_ANON_COUNT, 
+					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			preparedstatementUpdate.setInt(1, cri.getId());
+			preparedstatementUpdate.executeUpdate();
+			preparedstatementUpdate.close();
+			return stUserAlias;
+		} else {
+			// 0 rows: query failed
+			throw new SQLException();
+		}
 	}
 
 	/**
@@ -158,7 +201,7 @@ public class ChatServerManager {
 			connection = DatabaseUtility.connectionGetConnection();
 			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_POST_MESSAGE);
 			preparedstatement.setInt(1, chatRoomInfo.getId());
-			preparedstatement.setString(2, userInfo.getUserName());
+			preparedstatement.setString(2, stGetUserAlias(connection, userInfo, chatRoomInfo));
 			preparedstatement.setTimestamp(3, msgInfo.getTimeStamp());
 			preparedstatement.setString(4, msgInfo.getBody());
 
@@ -183,6 +226,29 @@ public class ChatServerManager {
 		}
 		DatabaseUtility.closeConnection(connection);
 		return ChatCode.FAILURE;
+	}
+
+	private static String stGetUserAlias(Connection connection, 
+			UserInfo userInfo, ChatRoomInfo cri) throws SQLException {
+		// Prepare the query
+		PreparedStatement preparedstatementSelect = connection.prepareStatement(SQLQueries.QUERY_GET_ACTIVE_USER_INFO, 
+				ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		preparedstatementSelect.setString(1, userInfo.getUserName());
+		preparedstatementSelect.setInt(2, cri.getId());
+		
+		// Execute the SELECT query
+		ResultSet resultsetSelect = preparedstatementSelect.executeQuery();
+		
+		if (resultsetSelect.next()) {
+			// Get the username
+			String stUserAlias = resultsetSelect.getString("user_alias");
+			preparedstatementSelect.close();
+			resultsetSelect.close();
+			return stUserAlias;
+		} else {
+			// 0 rows: query failed
+			throw new SQLException();
+		}
 	}
 
 	/**
