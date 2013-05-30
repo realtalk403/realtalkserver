@@ -14,12 +14,8 @@ public class Security {
 	 * @return the hashed version of the string
 	 */
 	public static String hash(String st) {
-		
-		//return DigestUtils.sha256Hex(st);
-		
-		// TODO: figure out how to deploy the commons codec jar to Maven.
-		// for now, this does nothing.
-		return st;
+		return DigestUtils.sha256Hex(st);
+		//return st;
 	}
 
 }
