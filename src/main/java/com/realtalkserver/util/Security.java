@@ -1,6 +1,6 @@
 package com.realtalkserver.util;
 
-import org.apache.commons.codec.digest.DigestUtils;
+//import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  * Provides security measures.
@@ -14,9 +14,14 @@ public class Security {
 	 * @return the hashed version of the string
 	 */
 	public static String hash(String st) {
+		/*
 		// This is a very convenient library function that does all the
 		// SHA hashing with java's MessageDigest library.
 		return DigestUtils.sha256Hex(st);
+		*/
+		// TODO: figure out how to deploy the commons codec jar to Maven.
+		// for now, this does nothing.
+		return st;
 	}
 
 }
