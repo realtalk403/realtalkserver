@@ -45,13 +45,15 @@ public class JoinRoomServlet extends BaseServlet {
 		String stRoomId = getParameter(req, RequestParameters.PARAMETER_ROOM_ID);
 		// TODO: Extra Room information may be required.
 		ChatRoomInfo chatRoomInfo = new ChatRoomInfo(stRoomName, Integer.parseInt(stRoomId), "", 0, 0, "", 0, null);
-		boolean fAnon = false;
-		String stAnon = "FALSE";
+		boolean fAnon;
+		String stAnon;
 		try {
 			stAnon = getParameter(req, RequestParameters.PARAMETER_ANON);
 			fAnon = stAnon.toUpperCase().equals("TRUE") ? true : false;
 		} catch (ServletException e) {
 			// Anon parameter not passed: assume not anonymous 
+			fAnon = false;
+			stAnon = "FALSE";
 		}
 		
 		logger.log(Level.INFO, "Retrieval Successful");
