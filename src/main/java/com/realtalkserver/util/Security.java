@@ -14,8 +14,8 @@ public class Security {
 	 * @return the hashed version of the string
 	 */
 	public static String hash(String st) {
-		return DigestUtils.sha256Hex(st);
-		//return st;
+		//return DigestUtils.sha256Hex(st);
+		return st;
 	}
 
 }
