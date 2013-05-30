@@ -36,19 +36,19 @@
         </dependency>
         <!-- Secure hashing library -->
         <dependency>
-            <groupId>commons</groupId>
-            <artifactId>commons</artifactId>
-            <version>codec-1.8</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.8</version>
         </dependency>
         <dependency>
-            <groupId>commons</groupId>
-            <artifactId>commons</artifactId>
-            <version>codec-1.8-sources</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.8-javadoc</version>
         </dependency>
         <dependency>
-            <groupId>commons</groupId>
-            <artifactId>commons</artifactId>
-            <version>codec-1.8-javadoc</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.8-sources</version>
         </dependency>
         <!-- JUnit -->
         <dependency>
