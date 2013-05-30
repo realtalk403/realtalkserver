@@ -15,8 +15,6 @@ public class Security {
 	 */
 	public static String hash(String st) {
 		/*
-		// This is a very convenient library function that does all the
-		// SHA hashing with java's MessageDigest library.
 		return DigestUtils.sha256Hex(st);
 		*/
 		// TODO: figure out how to deploy the commons codec jar to Maven.
