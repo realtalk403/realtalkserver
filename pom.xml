@@ -34,6 +34,22 @@
             <artifactId>postgresql</artifactId>
             <version>9.1-901.jdbc4</version>
         </dependency>
+        <!-- Secure hashing library -->
+        <dependency>
+            <groupId>commons</groupId>
+            <artifactId>commons</artifactId>
+            <version>codec-1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>commons</groupId>
+            <artifactId>commons</artifactId>
+            <version>codec-1.8-sources</version>
+        </dependency>
+        <dependency>
+            <groupId>commons</groupId>
+            <artifactId>commons</artifactId>
+            <version>codec-1.8-javadoc</version>
+        </dependency>
         <!-- JUnit -->
         <dependency>
             <groupId>junit</groupId>

@@ -1,7 +1,6 @@
 package com.realtalkserver.util;
 
 import java.net.URISyntaxException;
-import org.apache.commons.codec.digest.DigestUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
