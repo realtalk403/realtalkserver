@@ -36,8 +36,8 @@ public class NearbyRoomsServlet extends BaseServlet {
 			throws ServletException, IOException {
 		// Room Info
 		logger.log(Level.INFO, "Retrieving Location Information");
-		double longitude = Double.valueOf(getParameter(req, RequestParameters.PARAMETER_USER_LATITUDE));
-		double latitude = Double.valueOf(getParameter(req, RequestParameters.PARAMETER_USER_LONGITUDE));
+		double latitude = Double.valueOf(getParameter(req, RequestParameters.PARAMETER_USER_LATITUDE));
+		double longitude = Double.valueOf(getParameter(req, RequestParameters.PARAMETER_USER_LONGITUDE));
 		double radiusMeters = Double.valueOf(getParameter(req, RequestParameters.PARAMETER_USER_RADIUS));
 		logger.log(Level.INFO, "Retrieval Successful");
 		

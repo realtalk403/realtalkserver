@@ -45,10 +45,21 @@ public class JoinRoomServlet extends BaseServlet {
 		String stRoomId = getParameter(req, RequestParameters.PARAMETER_ROOM_ID);
 		// TODO: Extra Room information may be required.
 		ChatRoomInfo chatRoomInfo = new ChatRoomInfo(stRoomName, Integer.parseInt(stRoomId), "", 0, 0, "", 0, null);
+		boolean fAnon;
+		String stAnon;
+		try {
+			stAnon = getParameter(req, RequestParameters.PARAMETER_ANON);
+			fAnon = stAnon.toUpperCase().equals("TRUE") ? true : false;
+		} catch (ServletException e) {
+			// Anon parameter not passed: assume not anonymous 
+			fAnon = false;
+			stAnon = "FALSE";
+		}
+		
 		logger.log(Level.INFO, "Retrieval Successful");
 		
 		logger.log(Level.INFO, "Processing Join Request to Database");
-		ChatCode chatCodeJoinSuccess = ChatServerManager.chatcodeJoinRoom(userInfo, chatRoomInfo);
+		ChatCode chatCodeJoinSuccess = ChatServerManager.chatcodeJoinRoom(userInfo, chatRoomInfo, fAnon);
 		logger.log(Level.INFO, "Request completed");
 		
 		JSONObject jsonResponse = new JSONObject();
@@ -58,6 +69,7 @@ public class JoinRoomServlet extends BaseServlet {
 			jsonResponse.put(RequestParameters.PARAMETER_PWORD, stPwd);
 			jsonResponse.put(RequestParameters.PARAMETER_ROOM_NAME, stRoomName);
 			jsonResponse.put(RequestParameters.PARAMETER_ROOM_ID, stRoomId);
+			jsonResponse.put(RequestParameters.PARAMETER_ANON, stAnon);
 			
 			if (chatCodeJoinSuccess == ChatCode.SUCCESS) {
 				jsonResponse.put(RequestParameters.PARAMETER_SUCCESS, "true");

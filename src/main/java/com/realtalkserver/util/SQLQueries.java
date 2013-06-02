@@ -42,13 +42,13 @@ public class SQLQueries {
 	// Room queries
 	public static final String QUERY_ADD_ROOM = 
 			"INSERT " +
-			"INTO rooms (room_name, room_desc, time_created, creator_name, latitude, longitude) " +
-			"values(?, ?, ?, ?, ?, ?);";
+			"INTO rooms (room_name, room_desc, time_created, creator_name, latitude, longitude, anon_count) " +
+			"values(?, ?, ?, ?, ?, ?, 0);";
 
 	public static final String QUERY_JOIN_ROOM = 
 			"INSERT " +
 			"INTO active_users " +
-			"values(?, ?);";
+			"values(?, ?, ?);";
 
 	public static final String QUERY_LEAVE_ROOM = 
 			"DELETE " +
@@ -75,7 +75,7 @@ public class SQLQueries {
 			"ORDER BY time_sent DESC;";
 
 	public static final String QUERY_GET_ALL_ROOMS = 
-			"SELECT *" +
+			"SELECT * " +
 			"FROM rooms;";
 
 	public static final String QUERY_GET_ROOM_USERS = 
@@ -100,4 +100,24 @@ public class SQLQueries {
 			"WHERE a.room_id = r.room_id " +
 			"AND a.user_name = ?;";
 	
+	public static final String QUERY_GET_ACTIVE_USER_INFO = 
+			"SELECT * " +
+			"FROM active_users " +
+			"WHERE user_name = ? " +
+			"AND room_id = ?;";
+	
+	public static final String QUERY_GET_ROOM_INFO = 
+			"SELECT * " +
+			"FROM rooms " +
+			"WHERE room_id = ?;";
+	
+	public static final String QUERY_INCREMENT_ROOM_ANON_COUNT = 
+			"UPDATE rooms " +
+			"SET anon_count = anon_count+1 " +
+			"WHERE room_id = ?;";
+
+	public static final String QUERY_GET_TABLE_ALIAS = 
+			"SELECT user_alias " +
+			"FROM active_users " +
+			"WHERE user_name = ?;";
 }

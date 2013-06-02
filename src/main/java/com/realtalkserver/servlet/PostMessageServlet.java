@@ -106,7 +106,9 @@ public class PostMessageServlet extends BaseServlet {
 		if (ChatCode.SUCCESS == chatCodePostSuccess) {
 		    logger.log(Level.INFO, "Sending push notifications thru GCM");
 		    List<UserInfo> rguserinfo = ChatServerManager.rguserinfoGetRoomUsers(chatRoomInfo);
-		    GCMSendMessages.sendMulticastMessage(rguserinfo, messageInfo, chatRoomInfo);
+		    String stMessageSenderAlias = ChatServerManager.stGetMessageSenderAlias(stMessageSender, chatRoomInfo);
+		    MessageInfo messageinfoAnon = new MessageInfo(stMessageBody, stMessageSenderAlias, timeStamp);
+		    GCMSendMessages.sendMulticastMessage(rguserinfo, messageinfoAnon, chatRoomInfo);
 		    logger.log(Level.INFO, "Sending to GCM completed");
 		}
 		
