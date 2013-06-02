@@ -33,7 +33,7 @@ public class UserManager {
 			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_ADD_USER);
 			preparedstatement.setString(1, userName);
 			preparedstatement.setString(2, regId);
-			preparedstatement.setString(3, Security.hash(password));
+			preparedstatement.setString(3, password);
 
 			// Execute the INSERT query
 			int result = preparedstatement.executeUpdate();
@@ -127,7 +127,7 @@ public class UserManager {
 				// Connect to the database and prepare the query
 				connection = DatabaseUtility.connectionGetConnection();
 				PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_CHANGE_PASSWORD);
-				preparedstatement.setString(1, Security.hash(newPassword));
+				preparedstatement.setString(1, newPassword);
 				preparedstatement.setString(2, userName);
 
 				// Execute the UPDATE query
@@ -219,7 +219,7 @@ public class UserManager {
 			connection = DatabaseUtility.connectionGetConnection();
 			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_AUTHENTICATE);
 			preparedstatement.setString(1, userName);
-			preparedstatement.setString(2, Security.hash(password));
+			preparedstatement.setString(2, password);
 
 			// Execute the SELECT query
 			ResultSet resultset = preparedstatement.executeQuery();

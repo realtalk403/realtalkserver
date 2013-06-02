@@ -75,7 +75,7 @@ public class SQLQueries {
 			"ORDER BY time_sent DESC;";
 
 	public static final String QUERY_GET_ALL_ROOMS = 
-			"SELECT *" +
+			"SELECT * " +
 			"FROM rooms;";
 
 	public static final String QUERY_GET_ROOM_USERS = 
