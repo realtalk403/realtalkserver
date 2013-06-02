@@ -115,4 +115,9 @@ public class SQLQueries {
 			"UPDATE rooms " +
 			"SET anon_count = anon_count+1 " +
 			"WHERE room_id = ?;";
+
+	public static final String QUERY_GET_TABLE_ALIAS = 
+			"SELECT user_alias " +
+			"FROM active_users " +
+			"WHERE user_name = ?;";
 }

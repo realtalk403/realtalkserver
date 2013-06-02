@@ -558,4 +558,42 @@ public class ChatServerManager {
 		resultset.close();
 		return rguserinfo;
 	}
+
+	/**
+	 * Returns the user's alias in the given room.
+	 * 
+	 * @param stSenderUserName
+	 * @param chatRoomInfo
+	 * @return
+	 */
+	public static String stGetMessageSenderAlias(String stSenderUserName,
+			ChatRoomInfo chatRoomInfo) {
+		Connection connection = null;
+		String stUserAlias = stSenderUserName;
+		try {
+			// Connect to the database and prepare the query
+			connection = DatabaseUtility.connectionGetConnection();
+			PreparedStatement preparedstatement = connection.prepareStatement(SQLQueries.QUERY_GET_TABLE_ALIAS, 
+					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			preparedstatement.setString(1, stSenderUserName);
+
+			// Execute the SELECT query
+			ResultSet resultset = preparedstatement.executeQuery();
+
+			// Get the name
+			if (resultset.next()) {
+				stUserAlias = resultset.getString("user_alias");
+			}
+
+			resultset.close();
+		} catch (URISyntaxException e) {
+			// Database connection failed: Messages not retrieved
+		} catch (SQLException e) {
+			// SQL query failed: Messages not retrieved
+		} catch (ClassNotFoundException e) {
+			// Postgresql driver error
+		}
+		DatabaseUtility.closeConnection(connection);
+		return stUserAlias;
+	}
 }
